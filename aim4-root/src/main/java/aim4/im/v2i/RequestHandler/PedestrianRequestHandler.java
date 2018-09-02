@@ -3,6 +3,7 @@ package aim4.im.v2i.RequestHandler;
 import aim4.config.Constants.CardinalDirection;
 import aim4.config.Constants.TurnDirection;
 import aim4.im.Intersection;
+import aim4.im.IntersectionManager;
 import java.util.Iterator;
 import java.util.List;
 
@@ -13,6 +14,7 @@ import aim4.im.v2i.policy.BasePolicy.ReserveParam;
 import aim4.msg.i2v.Reject;
 import aim4.msg.v2i.Request;
 import aim4.sim.StatCollector;
+import java.util.ArrayList;
 
 public class PedestrianRequestHandler implements RequestHandler{
   /////////////////////////////////
@@ -46,13 +48,19 @@ public class PedestrianRequestHandler implements RequestHandler{
   private boolean stopAll;
   /** A copy of the intersection for this RequestHandler, so can determine turning directions. */
   private Intersection intersection;
+  /** A copy of the intersection manager for this RequestHandler, so can communicate with vehicles. */
+  private IntersectionManager im;
+  
+  private ArrayList<Integer> tracking;
   
   /////////////////////////////////
   // CONSTRUCTOR
   /////////////////////////////////
-  public PedestrianRequestHandler(Intersection i){
+  public PedestrianRequestHandler(Intersection i,IntersectionManager im){
       intersection = i;
+      this.im = im;
       left=right=top=bottom=topLeftToBottomRight=topRightToBottomLeft=stopAll=false;
+      tracking=new ArrayList<Integer>();
   } 
   
   /////////////////////////////////
@@ -170,7 +178,10 @@ public class PedestrianRequestHandler implements RequestHandler{
   @Override
   public void processRequestMsg(Request msg) {
     int vin = msg.getVin();
-
+    
+    if(!tracking.contains((Integer)vin))
+        tracking.add((Integer)vin);
+    
     // If the vehicle has got a reservation already, reject it.
     if (basePolicy.hasReservation(vin)) {
       basePolicy.sendRejectMsg(vin,
@@ -370,7 +381,20 @@ public class PedestrianRequestHandler implements RequestHandler{
       
     }
   }
-      
+     
+  private void sendRejects(){
+      for(Integer v : tracking){
+          try{
+          basePolicy.sendRejectMsg(v,0, Reject.Reason.NO_CLEAR_PATH);
+          }catch(Exception e){
+              //Vehicle couln't slow down
+          }
+      }
+  }
+  
+  public void removeTracking(int vin){
+      tracking.remove((Integer)vin);
+  }
 
   /**
    * Get the statistic collector.
@@ -387,50 +411,64 @@ public class PedestrianRequestHandler implements RequestHandler{
   public void setLeft(){
       if(left==true)
         left=false;
-      else
+      else{
         left=true;
+        sendRejects();
+      }
   }
   
   public void setRight(){
       if(right==true)
         right=false;
-      else
+      else{
         right=true;
+        sendRejects();
+      }
   }
   
   public void setTop(){
       if(top==true)
         top=false;
-      else
+      else{
         top=true;
+        sendRejects();
+      }
   }
   
   public void setBottom(){
       if(bottom==true)
         bottom=false;
-      else
+      else{
         bottom=true;
+        sendRejects();
+      }
   }
   
   public void setTopLeftToBottomRight(){
       if(topLeftToBottomRight==true)
         topLeftToBottomRight=false;
-      else
+      else{
         topLeftToBottomRight=true;
+        sendRejects();
+      }
   }
   
   public void setTopRightToBottomLeft(){
       if(topRightToBottomLeft==true)
         topRightToBottomLeft=false;
-      else
+      else{
         topRightToBottomLeft=true;
+        sendRejects();
+      }
   }
   
   public void setStopAll(){
       if(stopAll==true)
         stopAll=false;
-      else
+      else{
         stopAll=true;
+        sendRejects();
+      }
   }
   
   // BOOLEAN GETTERS //
