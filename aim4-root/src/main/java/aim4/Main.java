@@ -63,7 +63,8 @@ public class Main {
                           1, // median size
                           150, // distance between
                           0.28, // traffic level
-                          1.0 // stop distance before intersection
+                          1.0, // stop distance before intersection
+                          50.0 // pedestrian level
                           );
 
     new Viewer(simSetup);

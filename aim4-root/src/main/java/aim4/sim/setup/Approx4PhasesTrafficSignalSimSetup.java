@@ -85,10 +85,11 @@ public class Approx4PhasesTrafficSignalSimSetup extends BasicSimSetup
                                             double medianSize,
                                             double distanceBetween,
                                             double trafficLevel,
-                                            double stopDistBeforeIntersection) {
+                                            double stopDistBeforeIntersection,
+                                            double pedestrianLevel) {
     super(columns, rows, laneWidth, speedLimit, lanesPerRoad,
           medianSize, distanceBetween, trafficLevel,
-          stopDistBeforeIntersection);
+          stopDistBeforeIntersection, pedestrianLevel);
   }
 
   /////////////////////////////////
