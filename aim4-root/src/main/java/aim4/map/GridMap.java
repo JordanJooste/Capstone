@@ -97,6 +97,9 @@ public class GridMap implements BasicMap {
   private List<SpawnPoint> horizontalSpawnPoints;
   /** The vertical spawn points */
   private List<SpawnPoint> verticalSpawnPoints;
+  // PEDESTRIAN SPAWN POINTS
+  private List<PedestrianSpawnPoint> pedestrianSpawnPoints;
+  /** The horizontal spawn points */
   /** The lane registry */
   private Registry<Lane> laneRegistry =
     new ArrayListRegistry<Lane>();
@@ -471,6 +474,11 @@ public class GridMap implements BasicMap {
   public List<SpawnPoint> getVerticalSpawnPoints() {
     return verticalSpawnPoints;
   }
+  
+  // GET PEDESTRIAN SPAWN POINTS
+  public List<PedestrianSpawnPoint> getPedestrianSpawnPoints() {
+	    return pedestrianSpawnPoints;
+	  }
 
   /////////////////////////////////////////////
   // PUBLIC METHODS  (specific to Grid Layout)

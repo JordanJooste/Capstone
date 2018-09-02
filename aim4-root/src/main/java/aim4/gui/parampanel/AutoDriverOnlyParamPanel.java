@@ -177,4 +177,22 @@ public class AutoDriverOnlyParamPanel extends JPanel {
   public int getLanesPerRoad() {
     return (int)lanesPerRoadSlider.getValue();
   }
+  
+ /**
+  * Get pedestrian level from 0-100
+  * 
+  * @return integer p between 0-100 
+  */
+  public int getPedestrianLevel() {
+	    return (int)pedestrians.getValue();
+	  }
+  /**
+   * Get max wait time for pedestrians
+   * 
+   * @return max wait time in seconds for pedestrians
+   */
+   public int getMaxWaitTime() {
+ 	    return (int)maxWait.getValue();
+ 	  }
+  
 }

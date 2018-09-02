@@ -55,6 +55,7 @@ import aim4.driver.ProxyDriver;
 import aim4.im.IntersectionManager;
 import aim4.im.v2i.V2IManager;
 import aim4.map.DataCollectionLine;
+import aim4.map.PedestrianSpawnPoint;
 import aim4.map.BasicMap;
 import aim4.map.Road;
 import aim4.map.SpawnPoint;
@@ -157,33 +158,51 @@ public class AutoDriverOnlySimulator implements Simulator {
    */
   @Override
   public synchronized AutoDriverOnlySimStepResult step(double timeStep) {
-    if (Debug.PRINT_SIMULATOR_STAGE) {
+    
+	if (Debug.PRINT_SIMULATOR_STAGE) {
       System.err.printf("--------------------------------------\n");
       System.err.printf("------SIM:spawnVehicles---------------\n");
     }
     spawnVehicles(timeStep);
+    
+    if (Debug.PRINT_SIMULATOR_STAGE) {
+        System.err.printf("--------------------------------------\n");
+        System.err.printf("------SIM:spawnPedestrians---------------\n");
+      }
+    spawnPedestrians(timeStep);
+    
+    
     if (Debug.PRINT_SIMULATOR_STAGE) {
       System.err.printf("------SIM:provideSensorInput---------------\n");
     }
     provideSensorInput();
+    
     if (Debug.PRINT_SIMULATOR_STAGE) {
       System.err.printf("------SIM:letDriversAct---------------\n");
     }
-    try{
-    letDriversAct();
+    try {
     
-    if (Debug.PRINT_SIMULATOR_STAGE) {
-      System.err.printf("------SIM:letIntersectionManagersAct--------------\n");
-    }
-    letIntersectionManagersAct(timeStep);
-    if (Debug.PRINT_SIMULATOR_STAGE) {
-      System.err.printf("------SIM:communication---------------\n");
-    }
-    communication();
-    if (Debug.PRINT_SIMULATOR_STAGE) {
-      System.err.printf("------SIM:moveVehicles---------------\n");
-    }
-    moveVehicles(timeStep);}catch(Exception e){System.out.println(e);};
+    	letDriversAct();
+    
+    	if (Debug.PRINT_SIMULATOR_STAGE) {
+    		System.err.printf("------SIM:letIntersectionManagersAct--------------\n");
+    	}
+    	letIntersectionManagersAct(timeStep);
+    	
+    	if (Debug.PRINT_SIMULATOR_STAGE) {
+    		System.err.printf("------SIM:communication---------------\n");
+    	}
+    	communication();
+    	
+    	if (Debug.PRINT_SIMULATOR_STAGE) {
+    		System.err.printf("------SIM:moveVehicles---------------\n");
+    	}
+    	moveVehicles(timeStep);
+    	
+    } catch(Exception e){
+    	System.out.println(e);
+    	}
+    
     if (Debug.PRINT_SIMULATOR_STAGE) {
       System.err.printf("------SIM:cleanUpCompletedVehicles---------------\n");
     }
@@ -384,7 +403,31 @@ public class AutoDriverOnlySimulator implements Simulator {
 
     return vehicle;
   }
-
+  
+  // SPAWN PEDESTRIANS
+  private void spawnPedestrians(double timeStep) {
+	  /*for(SpawnPoint spawnPoint : basicMap.getSpawnPoints()) {
+	      List<SpawnSpec> spawnSpecs = spawnPoint.act(timeStep);
+	      if (!spawnSpecs.isEmpty()) {
+	        if (canSpawnVehicle(spawnPoint)) {
+	          for(SpawnSpec spawnSpec : spawnSpecs) {
+	            VehicleSimView vehicle = makeVehicle(spawnPoint, spawnSpec);
+	            VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
+	            vinToVehicles.put(vehicle.getVIN(), vehicle);
+	            break; // only handle the first spawn vehicle
+	                   // TODO: need to fix this
+	          }
+	        } // else ignore the spawnSpecs and do nothing
+	      }
+	    }
+	    */
+	  
+	  for (PedestrianSpawnPoint pedestrianSpawnPoint: basicMap.getPedestrianSpawnPoints()) {
+		  // List<Pedestrian> pedestrians = pedestrianSpawnPoint.act(timeStep);
+		  
+	  }
+  }
+  
 
   /////////////////////////////////
   // STEP 2

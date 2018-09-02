@@ -433,7 +433,6 @@ public class PedestrianRequestHandler implements RequestHandler{
         stopAll=true;
   }
   
-  
   // BOOLEAN GETTERS //
   
   public boolean getLeft() {
@@ -463,5 +462,4 @@ public class PedestrianRequestHandler implements RequestHandler{
   public boolean getStopAll() {
 	  return stopAll;
   }
-
 }

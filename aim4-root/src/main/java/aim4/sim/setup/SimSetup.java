@@ -43,6 +43,13 @@ public interface SimSetup {
    * @param trafficLevel  the traffic level
    */
   void setTrafficLevel(double trafficLevel);
+  
+  /**
+   * Set the pedestrian level.
+   *
+   * @param trafficLevel  the traffic level
+   */
+  void setPedestrianLevel(double pedestrianLevel);
 
   /**
    * Set the stopping distance before intersection.

@@ -54,6 +54,8 @@ public class BasicSimSetup implements SimSetup {
   protected double trafficLevel;
   /** The stopping distance before intersection */
   protected double stopDistBeforeIntersection;
+  /** The pedestrian level */
+  protected double pedestrianLevel;
 
   /**
    * Create a copy of a given basic simulator setup.
@@ -92,7 +94,8 @@ public class BasicSimSetup implements SimSetup {
                        int lanesPerRoad,
                        double medianSize, double distanceBetween,
                        double trafficLevel,
-                       double stopDistBeforeIntersection) {
+                       double stopDistBeforeIntersection,
+                       double pedestrianLevel) {
     this.numOfColumns = columns;
     this.numOfRows = rows;
     this.laneWidth = laneWidth;
@@ -102,6 +105,7 @@ public class BasicSimSetup implements SimSetup {
     this.distanceBetween = distanceBetween;
     this.trafficLevel = trafficLevel;
     this.stopDistBeforeIntersection = stopDistBeforeIntersection;
+    this.pedestrianLevel = pedestrianLevel;
   }
 
   /**
@@ -249,6 +253,12 @@ public class BasicSimSetup implements SimSetup {
   public void setLanesPerRoad(int lanesPerRoad) {
     this.lanesPerRoad = lanesPerRoad;
   }
+
+@Override
+public void setPedestrianLevel(double pedestrianLevel) {
+	this.pedestrianLevel = pedestrianLevel;
+	
+}
 
 
 

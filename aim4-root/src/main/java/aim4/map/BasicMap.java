@@ -123,7 +123,10 @@ public interface BasicMap {
    * @return the lkist of spawn points
    */
   List<SpawnPoint> getSpawnPoints();
-
+  
+  // GET LIST OF PEDESTRIAN SPAWN POINTS
+  List<PedestrianSpawnPoint> getPedestrianSpawnPoints();
+  
   /**
    * Set the intersection manager of a particular intersection.
    *
