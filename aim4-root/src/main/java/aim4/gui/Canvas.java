@@ -191,6 +191,15 @@ public class Canvas extends JPanel implements ComponentListener,
   private static final Color SELECTED_IM_OUTLINE_COLOR = Color.ORANGE;
   /** IM's stroke */
   private static final Stroke IM_OUTLINE_STROKE = new BasicStroke(0.3f);
+  
+  // Drawing elements for pedestrian crossings
+  /** Color of cross walk when pedestrians are crossing */
+  private static final Color PEDESTRIAN_CROSSING_COLOUR = Color.RED;
+  /** Color of cross walk when pedestrians are waiting to cross */
+  private static final Color PEDESTRIAN_WAITING_COLOUR = Color.YELLOW;
+  /** Stroke for pedestrian cross walks */
+  private static final Stroke PEDESTRIAN_STROKE = new BasicStroke(1.0f);
+  
   // Drawing elements for lanes
   /** The color of the road boundary */
   private static final Color ROAD_BOUNDARY_COLOR = Color.YELLOW;
@@ -761,10 +770,11 @@ public class Canvas extends JPanel implements ComponentListener,
         drawVehicleInfoString(displayBuffer, v, sim.getSimulationTime());
       }
       
-      // Draw the pedestrian crossing
+      // Draw the pedestrian crossings
       for (IntersectionManager im : ims) {
-        drawCrossWalks(displayBuffer, im);
+        drawCrossWalks(displayBuffer, im); // The non diagonal crosswalks
       }
+      
       
       // Finally display the new image
       repaint();
@@ -1347,11 +1357,9 @@ public class Canvas extends JPanel implements ComponentListener,
   
   // PEDESTRIAN CROSSING //
   
-  List<Lane> entryLanes;
-  List<Lane> exitLanes;
   
-  ArrayList<Integer> greenEntryLanes = new ArrayList<Integer>();
-  ArrayList<Integer> greenExitLanes = new ArrayList<Integer>();
+  // TODO: confusing name of this list
+  ArrayList<Line2D> openCrossWalks = new ArrayList<Line2D>();
   
   private void drawCrossWalks(Graphics2D buffer, IntersectionManager im) {
 	   
@@ -1367,137 +1375,75 @@ public class Canvas extends JPanel implements ComponentListener,
 	    	  PedestrianRequestHandler requestHandler = 
 	        		(PedestrianRequestHandler) basePolicy.getRequestHandler();
 	        
-	    	  entryLanes = im.getIntersection().getEntryLanes();
-	    	  exitLanes = im.getIntersection().getExitLanes();
+	    	  buffer.setPaint(PEDESTRIAN_CROSSING_COLOUR);
+	    		
+	    		
+	    	  Rectangle2D r = im.getIntersection().getBoundingBox();
+	    	  openCrossWalks.clear();
 	    	  
-	    	  HashMap<Integer, Lane> entryLaneIDs = new HashMap<Integer, Lane>();
-	    	  for (Lane l : entryLanes) {
-	    		  entryLaneIDs.put(l.getId(), l);
-	    	  }
-	    	  
-	    	  HashMap<Integer, Lane> exitLaneIDs = new HashMap<Integer, Lane>();
-	    	  for (Lane l : exitLanes) {
-	    		  exitLaneIDs.put(l.getId(), l);
-	    	  }
-	    	  
-	    	  greenEntryLanes.clear();
-	    	  greenExitLanes.clear();
+	    		// Create the 4 corners of the intersection
+	    		Point2D topLeft = new Point2D.Double(r.getMinX(), r.getMinY());
+	    	    Point2D bottomLeft = new Point2D.Double(r.getMinX(), r.getMaxY());
+	    	    Point2D topRight = new Point2D.Double(r.getMaxX(), r.getMinY());
+	    	    Point2D bottomRight = new Point2D.Double(r.getMaxX(), r.getMaxY());
+	    		
+	    	    // Create the 6 cross walks linking each corner
+
+	    		Line2D.Double left = new Line2D.Double(topLeft, bottomLeft);
+	    		Line2D.Double right = new Line2D.Double(topRight, bottomRight);
+	    		Line2D.Double top = new Line2D.Double(topLeft, topRight);
+	    		Line2D.Double bottom = new Line2D.Double(bottomLeft, bottomRight);
+	    		Line2D.Double topLeftToBottomRight = new Line2D.Double(topLeft, bottomRight);
+	    		Line2D.Double topRightToBottomLeft = new Line2D.Double(topRight, bottomLeft);
+	    		
+	    		 
+	    		buffer.setStroke(PEDESTRIAN_STROKE);
+	    		
+	    		
+	    	  if (requestHandler.getStopAll()) {
+	        		buffer.draw(left);
+	        		buffer.draw(right);
+	        		buffer.draw(top);
+	        		buffer.draw(bottom);
+	        		buffer.draw(topLeftToBottomRight);
+	        		buffer.draw(topRightToBottomLeft);
+	          }
 	        
-	    	  // Paint lanes that pedestrian may cross green
-	        
-	    	  // TODO: Exit lane ordering is nonsensical.
-	        
-	    	  buffer.setPaint(Color.GREEN);
-	    	  
-	        if (requestHandler.getStopAll()) {
-	        	for (int i=0; i<=11; i++) {
-	        		drawEntryLightShape(buffer, im, entryLaneIDs.get(i));
-	        		drawExitLightShape(buffer, im, exitLaneIDs.get(i));
-	        		greenEntryLanes.add(i);
-	        		greenExitLanes.add(i);
-	        	}
-	        }
-	        
-	        else {
+	    	  else {
 	        	
-	        	if (requestHandler.getLeft()) {
-		        	for (int i=6; i<=8; i++) {
-		        		// Entry: 6,7,8
-		        		// Exit: 9, 10, 11
-		        		drawEntryLightShape(buffer, im, entryLaneIDs.get(i));
-		        		drawExitLightShape(buffer, im, exitLaneIDs.get(i+3));
-		        		if (!greenEntryLanes.contains(i)) {
-		        			greenEntryLanes.add(i);
-		        		}
-		        		if (!greenExitLanes.contains(i+3)) {
-		        			greenExitLanes.add(i+3);
-		        		}
-		        	}
+	    		if (requestHandler.getLeft()) {
+	    			buffer.draw(left);
+	    			openCrossWalks.remove(left);
 	        	}
 	        	if (requestHandler.getTop()) {
-		        	for (int i=3; i<=5; i++) {
-		        		// Entry: 3,4,5
-		        		// Exit: 0,1,2
-		        		drawEntryLightShape(buffer, im, entryLaneIDs.get(i));
-		        		drawExitLightShape(buffer, im, exitLaneIDs.get(i-3));
-		        		if (!greenEntryLanes.contains(i)) {
-		        			greenEntryLanes.add(i);
-		        		}
-		        		if (!greenExitLanes.contains(i-3)) {
-		        			greenExitLanes.add(i-3);
-		        		}
-		        	}
+	        		buffer.draw(top);
+	        		openCrossWalks.remove(top);
 	        	}
 	        	if (requestHandler.getRight()) {
-		        	for (int i=9; i<=11; i++) {
-		        		// Entry: 9,10,11
-		        		// Exit: 6, 7, 8
-		        		drawEntryLightShape(buffer, im, entryLaneIDs.get(i));
-		        		drawExitLightShape(buffer, im, exitLaneIDs.get(i-3));
-		        		if (!greenEntryLanes.contains(i)) {
-		        			greenEntryLanes.add(i);
-		        		}
-		        		if (!greenExitLanes.contains(i-3)) {
-		        			greenExitLanes.add(i-3);
-		        		}
-		        	}
+	        		buffer.draw(right);
+	        		openCrossWalks.remove(right); 
 	        	}
 	        	if (requestHandler.getBottom()) {
-		        	for (int i=0; i<=2; i++) {
-		        		// Entry: 0,1,2
-		        		// Exit: 3,4,5
-		        		drawEntryLightShape(buffer, im, entryLaneIDs.get(i));
-		        		drawExitLightShape(buffer, im, exitLaneIDs.get(i+3));
-		        		if (!greenEntryLanes.contains(i)) {
-		        			greenEntryLanes.add(i);
-		        		}
-		        		if (!greenExitLanes.contains(i+3)) {
-		        			greenExitLanes.add(i+3);
-		        		}
-		        	}
+	        		buffer.draw(bottom);
+	        		openCrossWalks.remove(bottom);
 	        	}
-	        }
-	        // Paint lanes that pedestrians may not cross red
-    		buffer.setPaint(Color.RED);
-	        for (int i=0; i<=11; i++) {
-	        	if (!greenEntryLanes.contains(i)) {
-	        		drawEntryLightShape(buffer, im, entryLaneIDs.get(i));
-	        		}
-	        	if (!greenExitLanes.contains(i)) {
-	        		drawExitLightShape(buffer, im, exitLaneIDs.get(i));
-	        		}
+	        	if (requestHandler.getTopLeftToBottomRight()) {
+	        		buffer.draw(topLeftToBottomRight);
+	        		openCrossWalks.remove(topLeftToBottomRight);
 	        	}
-	        }
-	        
-         }
-     }
-  }
-  
-   public void drawEntryLightShape(Graphics2D buffer, IntersectionManager im, Lane entryLane) {
-	   Arc2D lightShape =
-          new Arc2D.Double(im.getIntersection().getEntryPoint(entryLane).getX()
-          - TRAFFIC_LIGHT_RADIUS, // x
-          im.getIntersection().getEntryPoint(entryLane).getY()
-          - TRAFFIC_LIGHT_RADIUS, // y
-          TRAFFIC_LIGHT_RADIUS * 2, // width
-          TRAFFIC_LIGHT_RADIUS * 2, // height
-          90 - // start
-          Math.toDegrees(im.getIntersection().getEntryHeading(entryLane)), 180.0, // extent
-          Arc2D.PIE); // type
-	  buffer.fill(lightShape);
-  }
-  
-  public void drawExitLightShape(Graphics2D buffer, IntersectionManager im, Lane exitLane) {
-	  Arc2D lightShape =
-          new Arc2D.Double(im.getIntersection().getExitPoint(exitLane).getX()
-          - TRAFFIC_LIGHT_RADIUS, // x
-          im.getIntersection().getExitPoint(exitLane).getY()
-          - TRAFFIC_LIGHT_RADIUS, // y
-          TRAFFIC_LIGHT_RADIUS * 2, // width
-          TRAFFIC_LIGHT_RADIUS * 2, // height
-          90 - // start
-          Math.toDegrees(im.getIntersection().getExitHeading(exitLane)), 180.0, // extent
-          Arc2D.PIE); // type
-	  buffer.fill(lightShape);
+	        	if (requestHandler.getTopRightToBottomLeft()) {
+	        		buffer.draw(topRightToBottomLeft);
+	        		openCrossWalks.remove(topRightToBottomLeft);
+	        	}
+	    	  }
+	    	  
+	    	  buffer.setPaint(PEDESTRIAN_WAITING_COLOUR);
+	    	  for (Line2D c : openCrossWalks) {
+	    		  buffer.draw(c);
+	    	  }
+	    	  
+	      }
+	      }
+	  }
   }
 }

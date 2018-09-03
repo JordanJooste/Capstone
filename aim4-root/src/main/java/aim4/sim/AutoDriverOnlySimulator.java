@@ -63,6 +63,7 @@ import aim4.map.SpawnPoint.SpawnSpec;
 import aim4.map.lane.Lane;
 import aim4.msg.i2v.I2VMessage;
 import aim4.msg.v2i.V2IMessage;
+import aim4.pedestrian.Pedestrian;
 import aim4.vehicle.AutoVehicleSimView;
 import aim4.vehicle.BasicAutoVehicle;
 import aim4.vehicle.HumanDrivenVehicleSimView;
@@ -422,10 +423,10 @@ public class AutoDriverOnlySimulator implements Simulator {
 	    }
 	    */
 	  
-	  for (PedestrianSpawnPoint pedestrianSpawnPoint: basicMap.getPedestrianSpawnPoints()) {
-		  // List<Pedestrian> pedestrians = pedestrianSpawnPoint.act(timeStep);
+	  //for (PedestrianSpawnPoint pedestrianSpawnPoint: basicMap.getPedestrianSpawnPoints()) {
+		  //List<Pedestrian> pedestrians = pedestrianSpawnPoint.act(timeStep);
 		  
-	  }
+	  //}
   }
   
 

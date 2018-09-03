@@ -1,6 +1,9 @@
 package aim4.map;
 
 import java.awt.geom.Point2D;
+import java.util.List;
+
+import aim4.pedestrian.Pedestrian;
 
 public class PedestrianSpawnPoint {
 	
@@ -21,6 +24,11 @@ public class PedestrianSpawnPoint {
 	
 	public Point2D getDestination() {
 		return location;
+	}
+
+	public List<Pedestrian> act(double timeStep) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }
