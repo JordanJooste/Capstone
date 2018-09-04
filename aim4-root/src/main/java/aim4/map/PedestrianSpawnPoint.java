@@ -1,34 +1,76 @@
 package aim4.map;
 
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import aim4.pedestrian.Pedestrian;
 
 public class PedestrianSpawnPoint {
 	
-	// Location of the spawning point
-	private Point2D location;
-	// Destination of this spawning point
-	private PedestrianSpawnPoint destinationSpawnPoint;
-	private String crosswalk;
+	private int id;
+	private double p; // pedestrianLevel
+	private ArrayList<Pedestrian> pedestrians;
 	
-	public PedestrianSpawnPoint(Point2D location, PedestrianSpawnPoint destinationSpawnPoint) {
-		this.location = location;
-		this.destinationSpawnPoint = destinationSpawnPoint;
+	private double timeRemaining;
+	private double maxWaitTime;
+	
+	public PedestrianSpawnPoint(int id, double l, double maxWaitTime){
+		this.id = id;
+		this.p = l;
+		this.timeRemaining = maxWaitTime;
+		this.pedestrians = new ArrayList<Pedestrian>();
+		this.maxWaitTime = maxWaitTime;
+		this.timeRemaining = maxWaitTime;
 	}
 	
-	public Point2D getLocation() {
-		return location;
+	public int getID() {
+		return id;
+	}
+	public int getNumberOfPedestrians() {
+		return pedestrians.size();
+	}
+	public void clearPedestrians() {
+		pedestrians.clear();
+	}
+	public boolean pedestriansWaiting() {
+		return !pedestrians.isEmpty();
 	}
 	
-	public Point2D getDestination() {
-		return location;
+	public void spawn () {
+		Pedestrian p = new Pedestrian();
+		pedestrians.add(p);
 	}
+	
+	public void act(double timeStep) {
+		// p = 100: pedestrian spawns every time step
+		// p = 0: pedestrian never spawns
+		Random r = new Random();
+		
+		// Return random double between 0 and 100
+		double randomValue = 100 * r.nextDouble();
 
-	public List<Pedestrian> act(double timeStep) {
-		// TODO Auto-generated method stub
-		return null;
+		if (getTimeRemaining() <= 0) {
+			// Time is up
+			pedestrians.clear();
+			timeRemaining = maxWaitTime;
+		}
+		else {
+			if (randomValue >= p) {
+				// This will run p% of the time
+				Pedestrian p = new Pedestrian();
+				pedestrians.add(p);
+			}
+			else {
+				// This will run (1-p)% of the time
+				// Do nothing
+			}
+			timeRemaining -= timeStep;
+		}
 	}
 	
+	public double getTimeRemaining() {
+		return timeRemaining;
+	}
 }

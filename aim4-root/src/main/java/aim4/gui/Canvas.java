@@ -194,11 +194,24 @@ public class Canvas extends JPanel implements ComponentListener,
   
   // Drawing elements for pedestrian crossings
   /** Color of cross walk when pedestrians are crossing */
-  private static final Color PEDESTRIAN_CROSSING_COLOUR = Color.RED;
+  private static final Color PEDESTRIAN_CROSSING_COLOR = Color.RED;
   /** Color of cross walk when pedestrians are waiting to cross */
-  private static final Color PEDESTRIAN_WAITING_COLOUR = Color.YELLOW;
+  private static final Color PEDESTRIAN_WAITING_COLOR = Color.YELLOW;
   /** Stroke for pedestrian cross walks */
-  private static final Stroke PEDESTRIAN_STROKE = new BasicStroke(1.0f);
+  private static final Stroke PEDESTRIAN_STROKE = new BasicStroke(1.5f);
+  
+  // Drawing elements for pedestrian spawn points
+  /** Color of spawn point with pedestrians on it */
+  private static final Color PSP_OCCUPIED_COLOR = Color.MAGENTA;
+  /** Color of spawn point without pedestrians on it */
+  private static final Color PSP_EMPTY_COLOR = Color.WHITE;
+  private static final Color PSP_OUTLINE_COLOR = Color.BLACK;
+  /** Pedestrian spawn point square width */
+  private static final int H = 3;
+  /** Pedestrian spawn point offset */
+  private static final int O = 3;
+  /** Stroke for pedestrian spawn points */
+  private static final Stroke PSP_STROKE = new BasicStroke(0.5f);
   
   // Drawing elements for lanes
   /** The color of the road boundary */
@@ -773,6 +786,7 @@ public class Canvas extends JPanel implements ComponentListener,
       // Draw the pedestrian crossings
       for (IntersectionManager im : ims) {
         drawCrossWalks(displayBuffer, im); // The non diagonal crosswalks
+        drawPedestrianSpawnPoints(displayBuffer, im);
       }
       
       
@@ -1359,7 +1373,7 @@ public class Canvas extends JPanel implements ComponentListener,
   
   
   // TODO: confusing name of this list
-  ArrayList<Line2D> openCrossWalks = new ArrayList<Line2D>();
+  ArrayList<Line2D> crossWalks = new ArrayList<Line2D>();
   
   private void drawCrossWalks(Graphics2D buffer, IntersectionManager im) {
 	   
@@ -1374,12 +1388,9 @@ public class Canvas extends JPanel implements ComponentListener,
 	          
 	    	  PedestrianRequestHandler requestHandler = 
 	        		(PedestrianRequestHandler) basePolicy.getRequestHandler();
-	        
-	    	  buffer.setPaint(PEDESTRIAN_CROSSING_COLOUR);
-	    		
-	    		
+	    	  
 	    	  Rectangle2D r = im.getIntersection().getBoundingBox();
-	    	  openCrossWalks.clear();
+	    	  crossWalks.clear();
 	    	  
 	    		// Create the 4 corners of the intersection
 	    		Point2D topLeft = new Point2D.Double(r.getMinX(), r.getMinY());
@@ -1388,7 +1399,6 @@ public class Canvas extends JPanel implements ComponentListener,
 	    	    Point2D bottomRight = new Point2D.Double(r.getMaxX(), r.getMaxY());
 	    		
 	    	    // Create the 6 cross walks linking each corner
-
 	    		Line2D.Double left = new Line2D.Double(topLeft, bottomLeft);
 	    		Line2D.Double right = new Line2D.Double(topRight, bottomRight);
 	    		Line2D.Double top = new Line2D.Double(topLeft, topRight);
@@ -1396,9 +1406,18 @@ public class Canvas extends JPanel implements ComponentListener,
 	    		Line2D.Double topLeftToBottomRight = new Line2D.Double(topLeft, bottomRight);
 	    		Line2D.Double topRightToBottomLeft = new Line2D.Double(topRight, bottomLeft);
 	    		
-	    		 
 	    		buffer.setStroke(PEDESTRIAN_STROKE);
 	    		
+	    		crossWalks.add(left); crossWalks.add(right);
+	    		crossWalks.add(top); crossWalks.add(bottom);
+	    		crossWalks.add(topLeftToBottomRight); crossWalks.add(topRightToBottomLeft);
+	    		
+	    		buffer.setPaint(PEDESTRIAN_WAITING_COLOR);
+		    	  for (Line2D c : crossWalks) {
+		    		 buffer.draw(c);
+		    	  }
+		    	 
+		      buffer.setPaint(PEDESTRIAN_CROSSING_COLOR);
 	    		
 	    	  if (requestHandler.getStopAll()) {
 	        		buffer.draw(left);
@@ -1413,37 +1432,81 @@ public class Canvas extends JPanel implements ComponentListener,
 	        	
 	    		if (requestHandler.getLeft()) {
 	    			buffer.draw(left);
-	    			openCrossWalks.remove(left);
 	        	}
 	        	if (requestHandler.getTop()) {
 	        		buffer.draw(top);
-	        		openCrossWalks.remove(top);
 	        	}
 	        	if (requestHandler.getRight()) {
 	        		buffer.draw(right);
-	        		openCrossWalks.remove(right); 
 	        	}
 	        	if (requestHandler.getBottom()) {
 	        		buffer.draw(bottom);
-	        		openCrossWalks.remove(bottom);
 	        	}
 	        	if (requestHandler.getTopLeftToBottomRight()) {
 	        		buffer.draw(topLeftToBottomRight);
-	        		openCrossWalks.remove(topLeftToBottomRight);
 	        	}
 	        	if (requestHandler.getTopRightToBottomLeft()) {
 	        		buffer.draw(topRightToBottomLeft);
-	        		openCrossWalks.remove(topRightToBottomLeft);
 	        	}
 	    	  }
-	    	  
-	    	  buffer.setPaint(PEDESTRIAN_WAITING_COLOUR);
-	    	  for (Line2D c : openCrossWalks) {
-	    		  buffer.draw(c);
-	    	  }
-	    	  
 	      }
 	      }
 	  }
   }
+
+  public void drawPedestrianSpawnPoints(Graphics2D buffer, IntersectionManager im) {
+	  
+	  if (im instanceof V2IManager) {
+	      
+		  Policy policy = ((V2IManager) im).getPolicy();
+	      if (policy instanceof BasePolicy) {
+	      BasePolicy basePolicy = (BasePolicy) policy;
+	        
+	      // This code runs when in pedestrian mode 
+	      if (basePolicy.getRequestHandler() instanceof PedestrianRequestHandler) {
+	    	  
+	    	  PedestrianRequestHandler requestHandler = 
+		        		(PedestrianRequestHandler) basePolicy.getRequestHandler();
+	    	  
+	    	  buffer.setStroke(PSP_STROKE);
+	    	  
+	    	  Rectangle2D r = im.getIntersection().getBoundingBox();
+	    	  
+	    	  ArrayList<Rectangle2D.Double> psps = new ArrayList<Rectangle2D.Double>(); 
+	    	  
+	    	  Rectangle2D.Double psp0 = new Rectangle2D.Double(r.getMinX() - O, r.getMinY() - O, H, H);
+	    	  Rectangle2D.Double psp1 = new Rectangle2D.Double(r.getMinX() - O, r.getMinY(), H, H);
+	    	  Rectangle2D.Double psp2 = new Rectangle2D.Double(r.getMinX(), r.getMinY() - H, H, H);
+	    	  Rectangle2D.Double psp3 = new Rectangle2D.Double(r.getMaxX() - O, r.getMinY() - O, H, H);
+	    	  Rectangle2D.Double psp4 = new Rectangle2D.Double(r.getMaxX(), r.getMinY() - O, H, H);
+	    	  Rectangle2D.Double psp5 = new Rectangle2D.Double(r.getMaxX(), r.getMinY(), H, H);
+	    	  Rectangle2D.Double psp6 = new Rectangle2D.Double(r.getMaxX(), r.getMaxY() - O, H, H);
+	    	  Rectangle2D.Double psp7 = new Rectangle2D.Double(r.getMaxX(), r.getMaxY(), H, H);
+	    	  Rectangle2D.Double psp8 = new Rectangle2D.Double(r.getMaxX() - O, r.getMaxY(), H, H);
+	    	  Rectangle2D.Double psp9 = new Rectangle2D.Double(r.getMinX(), r.getMaxY(), H, H);
+	    	  Rectangle2D.Double psp10 = new Rectangle2D.Double(r.getMinX() - O, r.getMaxY(), H, H);
+	    	  Rectangle2D.Double psp11 = new Rectangle2D.Double(r.getMinX() - O, r.getMaxY() - O, H, H);
+	    	 
+	    	  psps.add(psp0);psps.add(psp1);psps.add(psp2);psps.add(psp3);psps.add(psp4);psps.add(psp5);
+	    	  psps.add(psp6);psps.add(psp7);psps.add(psp8);psps.add(psp9);psps.add(psp10);psps.add(psp11);
+	    	  
+	    	  for (int i=0; i<=11; i++) {
+	    		 
+	    		 buffer.setPaint(PSP_OUTLINE_COLOR);
+	    		 buffer.draw(psps.get(i));
+	    		 
+	    		 if (requestHandler.getPedestrianSpawnPoints().get(i).pedestriansWaiting()) {
+	    			 buffer.setPaint(PSP_OCCUPIED_COLOR);
+	    		 }
+	    		 else {
+	    			 buffer.setPaint(PSP_EMPTY_COLOR);
+	    		 }
+	    		 buffer.fill(psps.get(i));
+	    	  }
+	      }
+	      }
+	  }
+  }
+  
 }
+	  

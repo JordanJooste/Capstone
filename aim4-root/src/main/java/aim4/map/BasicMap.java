@@ -124,9 +124,6 @@ public interface BasicMap {
    */
   List<SpawnPoint> getSpawnPoints();
   
-  // GET LIST OF PEDESTRIAN SPAWN POINTS
-  List<PedestrianSpawnPoint> getPedestrianSpawnPoints();
-  
   /**
    * Set the intersection manager of a particular intersection.
    *
@@ -142,4 +139,7 @@ public interface BasicMap {
    * @param outFileName  the name of the file to which the data are outputted.
    */
   void printDataCollectionLinesData(String outFileName);
+
+double getPedestrianLevel();
+double getMaxWaitTime();
 }

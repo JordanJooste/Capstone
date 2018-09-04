@@ -97,9 +97,6 @@ public class GridMap implements BasicMap {
   private List<SpawnPoint> horizontalSpawnPoints;
   /** The vertical spawn points */
   private List<SpawnPoint> verticalSpawnPoints;
-  // PEDESTRIAN SPAWN POINTS
-  private List<PedestrianSpawnPoint> pedestrianSpawnPoints;
-  /** The horizontal spawn points */
   /** The lane registry */
   private Registry<Lane> laneRegistry =
     new ArrayListRegistry<Lane>();
@@ -108,6 +105,10 @@ public class GridMap implements BasicMap {
     new ArrayListRegistry<IntersectionManager>();
   /** A mapping form lanes to roads they belong */
   private Map<Lane,Road> laneToRoad = new HashMap<Lane,Road>();
+  /** Pedestrian level */
+  private double pedestrianLevel;
+  /** Max wait time for pedestrians */
+  private double maxWaitTime;
 
   /////////////////////////////////
   // CLASS CONSTRUCTORS
@@ -125,10 +126,11 @@ public class GridMap implements BasicMap {
    * @param medianSize       the width of the area between the roads in opposite
    *                         direction
    * @param distanceBetween  the distance between the adjacent intersections
+ * @param maxWaitTime 
    */
   public GridMap(double initTime, int columns, int rows,
                  double laneWidth, double speedLimit, int lanesPerRoad,
-                 double medianSize, double distanceBetween) {
+                 double medianSize, double distanceBetween, double pedestrianLevel, double maxWaitTime) {
     // Can't make these unless there is at least one row and column
     if(rows < 1 || columns < 1) {
       throw new IllegalArgumentException("Must have at least one column "+
@@ -334,6 +336,9 @@ public class GridMap implements BasicMap {
     intersectionManagerGrid = new IntersectionManager[columns][rows];
 
     initializeSpawnPoints(initTime);
+    
+    this.pedestrianLevel = pedestrianLevel;
+    this.maxWaitTime = maxWaitTime;
   }
 
   /**
@@ -474,12 +479,6 @@ public class GridMap implements BasicMap {
   public List<SpawnPoint> getVerticalSpawnPoints() {
     return verticalSpawnPoints;
   }
-  
-  // GET PEDESTRIAN SPAWN POINTS
-  public List<PedestrianSpawnPoint> getPedestrianSpawnPoints() {
-	    return pedestrianSpawnPoints;
-	  }
-
   /////////////////////////////////////////////
   // PUBLIC METHODS  (specific to Grid Layout)
   /////////////////////////////////////////////
@@ -642,5 +641,14 @@ public class GridMap implements BasicMap {
 
     outfile.close();
   }
+  
+  // GET PEDESTRIAN LEVEL
+  public double getPedestrianLevel() {
+	  return pedestrianLevel;
+  }
+//GET MAX WAIT TIME
+ public double getMaxWaitTime() {
+	  return maxWaitTime;
+ }
 
 }

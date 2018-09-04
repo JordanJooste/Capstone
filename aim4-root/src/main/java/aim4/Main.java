@@ -64,8 +64,8 @@ public class Main {
                           150, // distance between
                           0.28, // traffic level
                           1.0, // stop distance before intersection
-                          50.0 // pedestrian level
-                          );
+                          50.0, // pedestrian level
+                          10.0); // maxWaitTime;
 
     new Viewer(simSetup);
   }

@@ -56,6 +56,8 @@ public class BasicSimSetup implements SimSetup {
   protected double stopDistBeforeIntersection;
   /** The pedestrian level */
   protected double pedestrianLevel;
+  /** The maximum wait time for a pedestrian */
+  protected double maxWaitTime;
 
   /**
    * Create a copy of a given basic simulator setup.
@@ -72,6 +74,8 @@ public class BasicSimSetup implements SimSetup {
     this.distanceBetween = basicSimSetup.distanceBetween;
     this.trafficLevel = basicSimSetup.trafficLevel;
     this.stopDistBeforeIntersection = basicSimSetup.stopDistBeforeIntersection;
+    this.pedestrianLevel = basicSimSetup.pedestrianLevel;
+    this.maxWaitTime = basicSimSetup.maxWaitTime;
   }
 
   /**
@@ -88,6 +92,8 @@ public class BasicSimSetup implements SimSetup {
    * @param trafficLevel                the traffic level
    * @param stopDistBeforeIntersection  the stopping distance before
    *                                    intersection
+ * @param maxWaitTime2 
+ * @param maxWaitTime2 
    */
   public BasicSimSetup(int columns, int rows,
                        double laneWidth, double speedLimit,
@@ -95,7 +101,7 @@ public class BasicSimSetup implements SimSetup {
                        double medianSize, double distanceBetween,
                        double trafficLevel,
                        double stopDistBeforeIntersection,
-                       double pedestrianLevel) {
+                       double pedestrianLevel, double maxWaitTime) {
     this.numOfColumns = columns;
     this.numOfRows = rows;
     this.laneWidth = laneWidth;
@@ -106,6 +112,7 @@ public class BasicSimSetup implements SimSetup {
     this.trafficLevel = trafficLevel;
     this.stopDistBeforeIntersection = stopDistBeforeIntersection;
     this.pedestrianLevel = pedestrianLevel;
+    this.maxWaitTime = maxWaitTime;
   }
 
   /**
@@ -198,6 +205,16 @@ public class BasicSimSetup implements SimSetup {
   public double getStopDistBeforeIntersection() {
     return stopDistBeforeIntersection;
   }
+  
+  /**
+   * Get the pedestrian level.
+   *
+   * @return the traffic level
+   */
+  public double getPedestrianLevel() {
+    return pedestrianLevel;
+  }
+
 
 
   /**
@@ -257,9 +274,11 @@ public class BasicSimSetup implements SimSetup {
 @Override
 public void setPedestrianLevel(double pedestrianLevel) {
 	this.pedestrianLevel = pedestrianLevel;
+}
+public void setMaxWaitTime(double maxWaitTime) {
+	this.pedestrianLevel = maxWaitTime;
 	
 }
-
 
 
 }

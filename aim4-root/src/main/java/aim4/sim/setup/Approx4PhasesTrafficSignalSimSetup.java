@@ -86,10 +86,11 @@ public class Approx4PhasesTrafficSignalSimSetup extends BasicSimSetup
                                             double distanceBetween,
                                             double trafficLevel,
                                             double stopDistBeforeIntersection,
-                                            double pedestrianLevel) {
+                                            double pedestrianLevel,
+                                            double maxWaitTime) {
     super(columns, rows, laneWidth, speedLimit, lanesPerRoad,
           medianSize, distanceBetween, trafficLevel,
-          stopDistBeforeIntersection, pedestrianLevel);
+          stopDistBeforeIntersection, pedestrianLevel, maxWaitTime);
   }
 
   /////////////////////////////////
@@ -127,7 +128,9 @@ public class Approx4PhasesTrafficSignalSimSetup extends BasicSimSetup
                                        speedLimit,
                                        lanesPerRoad,
                                        medianSize,
-                                       distanceBetween);
+                                       distanceBetween,
+                                       pedestrianLevel,
+                                       maxWaitTime);
 
     ReservationGridManager.Config gridConfig =
       new ReservationGridManager.Config(SimConfig.TIME_STEP,
