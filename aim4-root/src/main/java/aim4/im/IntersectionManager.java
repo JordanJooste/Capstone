@@ -306,5 +306,6 @@ public class IntersectionManager {
     return Collections.emptyList(); // Nothing by default
   }
 
+  // METHODS FOR PEDESTRIAN SPAWNING
 
 }

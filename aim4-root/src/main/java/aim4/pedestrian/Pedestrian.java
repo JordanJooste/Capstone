@@ -1,10 +1,11 @@
 package aim4.pedestrian;
 
 import aim4.im.*;
+import aim4.map.PedestrianSpawnPoint;
 
 public class Pedestrian {
 	
-	private IntersectionManager im;
-	private double p;
-	
+	private PedestrianSpawnPoint psp;
+	// To be extended for GUI. 
+	// Could show pedestrians walking.
 }

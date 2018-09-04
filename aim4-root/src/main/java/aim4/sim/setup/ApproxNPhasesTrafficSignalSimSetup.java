@@ -110,7 +110,9 @@ public class ApproxNPhasesTrafficSignalSimSetup extends BasicSimSetup
                                        speedLimit,
                                        lanesPerRoad,
                                        medianSize,
-                                       distanceBetween);
+                                       distanceBetween,
+                                       pedestrianLevel,
+                                       maxWaitTime);
 
     ReservationGridManager.Config gridConfig =
       new ReservationGridManager.Config(SimConfig.TIME_STEP,

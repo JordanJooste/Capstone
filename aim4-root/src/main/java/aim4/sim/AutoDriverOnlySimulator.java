@@ -54,6 +54,9 @@ import aim4.driver.DriverSimView;
 import aim4.driver.ProxyDriver;
 import aim4.im.IntersectionManager;
 import aim4.im.v2i.V2IManager;
+import aim4.im.v2i.RequestHandler.PedestrianRequestHandler;
+import aim4.im.v2i.policy.BasePolicy;
+import aim4.im.v2i.policy.Policy;
 import aim4.map.DataCollectionLine;
 import aim4.map.PedestrianSpawnPoint;
 import aim4.map.BasicMap;
@@ -126,6 +129,8 @@ public class AutoDriverOnlySimulator implements Simulator {
   private int totalBitsTransmittedByCompletedVehicles;
   /** The total number of bits received by the completed vehicles */
   private int totalBitsReceivedByCompletedVehicles;
+  
+  private ArrayList<PedestrianSpawnPoint> psps = new ArrayList<PedestrianSpawnPoint>();
 
   public static CountDownLatch CountDown;
   
@@ -407,26 +412,38 @@ public class AutoDriverOnlySimulator implements Simulator {
   
   // SPAWN PEDESTRIANS
   private void spawnPedestrians(double timeStep) {
-	  /*for(SpawnPoint spawnPoint : basicMap.getSpawnPoints()) {
-	      List<SpawnSpec> spawnSpecs = spawnPoint.act(timeStep);
-	      if (!spawnSpecs.isEmpty()) {
-	        if (canSpawnVehicle(spawnPoint)) {
-	          for(SpawnSpec spawnSpec : spawnSpecs) {
-	            VehicleSimView vehicle = makeVehicle(spawnPoint, spawnSpec);
-	            VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
-	            vinToVehicles.put(vehicle.getVIN(), vehicle);
-	            break; // only handle the first spawn vehicle
-	                   // TODO: need to fix this
-	          }
-	        } // else ignore the spawnSpecs and do nothing
-	      }
-	    }
-	    */
 	  
-	  //for (PedestrianSpawnPoint pedestrianSpawnPoint: basicMap.getPedestrianSpawnPoints()) {
-		  //List<Pedestrian> pedestrians = pedestrianSpawnPoint.act(timeStep);
+	  // for each intersection
+	  	// if intersection manager is a pedestrianRequestHandler
+	  		// for each PSP 0 -> 11
+	  			// spawn with probability p
+	  			// do nothing with probability 1-p
+	  		//
+	  	// else do nothing 
+	  
+	  // Needed: All IM objects and the pedestrian level
+	  
+	  double p = basicMap.getPedestrianLevel();
+	  
+	  for (IntersectionManager im : basicMap.getIntersectionManagers()) {
 		  
-	  //}
+		  Policy policy = ((V2IManager) im).getPolicy();
+	      if (policy instanceof BasePolicy) {
+	      BasePolicy basePolicy = (BasePolicy) policy;
+	    		  
+	      if (basePolicy.getRequestHandler() instanceof PedestrianRequestHandler) {
+	    	  
+	    	  PedestrianRequestHandler requestHandler = 
+		        		(PedestrianRequestHandler) basePolicy.getRequestHandler();	
+	    	  
+	    	  psps = requestHandler.getPedestrianSpawnPoints();
+	    	  
+	    	 for (int i=0; i<=11; i++) {
+	    		 psps.get(i).act(timeStep);
+	    	 }
+	      }
+	  }
+	  }  
   }
   
 

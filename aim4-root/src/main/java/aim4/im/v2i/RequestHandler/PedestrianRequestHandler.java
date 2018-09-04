@@ -9,10 +9,12 @@ import java.util.List;
 
 import aim4.im.v2i.policy.BasePolicy;
 import aim4.im.v2i.policy.BasePolicyCallback;
+import aim4.map.PedestrianSpawnPoint;
 import aim4.im.v2i.policy.BasePolicy.ProposalFilterResult;
 import aim4.im.v2i.policy.BasePolicy.ReserveParam;
 import aim4.msg.i2v.Reject;
 import aim4.msg.v2i.Request;
+import aim4.pedestrian.Pedestrian;
 import aim4.sim.StatCollector;
 import java.util.ArrayList;
 
@@ -32,6 +34,7 @@ public class PedestrianRequestHandler implements RequestHandler{
   private BasePolicyCallback basePolicy;
   /** The next switch time */
   private double nextSwitchTime;
+  
   /** Whether pedestrians are crossing the left road*/
   private boolean left;
   /** Whether pedestrians are crossing the right road*/
@@ -46,6 +49,12 @@ public class PedestrianRequestHandler implements RequestHandler{
   private boolean topRightToBottomLeft;
   /** Whether pedestrians are crossing all roads and across the intersection*/
   private boolean stopAll;
+  
+  // Spawn point variables
+  private ArrayList<PedestrianSpawnPoint> psps = new ArrayList<PedestrianSpawnPoint>();
+  private double pedestrianLevel;
+  private double maxWaitTime;
+  
   /** A copy of the intersection for this RequestHandler, so can determine turning directions. */
   private Intersection intersection;
   /** A copy of the intersection manager for this RequestHandler, so can communicate with vehicles. */
@@ -61,6 +70,10 @@ public class PedestrianRequestHandler implements RequestHandler{
       this.im = im;
       left=right=top=bottom=topLeftToBottomRight=topRightToBottomLeft=stopAll=false;
       tracking=new ArrayList<Integer>();
+      
+      for (int x=0; x<12; x++) {
+    	  psps.add(new PedestrianSpawnPoint(x, pedestrianLevel, maxWaitTime));
+      }
   } 
   
   /////////////////////////////////
@@ -499,5 +512,9 @@ public class PedestrianRequestHandler implements RequestHandler{
   
   public boolean getStopAll() {
 	  return stopAll;
+  }
+  
+  public ArrayList<PedestrianSpawnPoint> getPedestrianSpawnPoints(){
+	  return psps;
   }
 }

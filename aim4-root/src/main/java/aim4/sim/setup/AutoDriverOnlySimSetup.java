@@ -114,6 +114,7 @@ public class AutoDriverOnlySimSetup extends BasicSimSetup implements SimSetup {
    * @param trafficLevel                the traffic level
    * @param stopDistBeforeIntersection  the stopping distance before intersections
    * @param pedestrianLevel				the pedestrian level
+   * @param maxWaitTime					the maximum wait time of a pedestrian
    */
   public AutoDriverOnlySimSetup(int columns, int rows,
                                 double laneWidth,
@@ -123,10 +124,10 @@ public class AutoDriverOnlySimSetup extends BasicSimSetup implements SimSetup {
                                 double distanceBetween,
                                 double trafficLevel,
                                 double stopDistBeforeIntersection,
-                                double pedestrianLevel) {
+                                double pedestrianLevel, double maxWaitTime) {
     super(columns, rows, laneWidth, speedLimit, lanesPerRoad,
           medianSize, distanceBetween, trafficLevel,
-          stopDistBeforeIntersection, pedestrianLevel);
+          stopDistBeforeIntersection, pedestrianLevel, maxWaitTime);
   }
 
 
@@ -239,7 +240,9 @@ public class AutoDriverOnlySimSetup extends BasicSimSetup implements SimSetup {
                                        speedLimit,
                                        lanesPerRoad,
                                        medianSize,
-                                       distanceBetween);
+                                       distanceBetween,
+                                       pedestrianLevel,
+                                       maxWaitTime);
 /* standard */
     ReservationGridManager.Config gridConfig =
       new ReservationGridManager.Config(SimConfig.TIME_STEP,

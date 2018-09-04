@@ -50,6 +50,7 @@ import java.util.TreeMap;
 
 import aim4.config.Debug;
 import aim4.config.Constants.TurnDirection;
+import aim4.map.PedestrianSpawnPoint;
 import aim4.map.Road;
 import aim4.map.lane.Lane;
 import aim4.map.track.WayPoint;
@@ -167,7 +168,20 @@ public class RoadBasedIntersection implements Intersection {
    */
   private Map<Lane,Double> exitHeadings = new HashMap<Lane,Double>();
 
-
+  // SPAWN POINTS
+  private PedestrianSpawnPoint psp0;
+  private PedestrianSpawnPoint psp1;
+  private PedestrianSpawnPoint psp2;
+  private PedestrianSpawnPoint psp3;
+  private PedestrianSpawnPoint psp4;
+  private PedestrianSpawnPoint psp5;
+  private PedestrianSpawnPoint psp6;
+  private PedestrianSpawnPoint psp7;
+  private PedestrianSpawnPoint psp8;
+  private PedestrianSpawnPoint psp9;
+  private PedestrianSpawnPoint psp10;
+  private PedestrianSpawnPoint psp11;
+  
   /////////////////////////////////
   // CLASS CONSTRUCTORS
   /////////////////////////////////
@@ -735,31 +749,4 @@ public class RoadBasedIntersection implements Intersection {
       }
       return null;
   }
-  
-  /** METHODS FOR PEDESTRIAN CROSSING**/
-  
-  // Return number of roads entering intersection
-  public int getNumberOfEntryRoads() {
-	  return entryRoads.size() ;
-  }
-  
-  // Return number of roads exiting intersection
-  public int getNumberOfExitRoads() {
-	  return exitRoads.size();
-  }
-  
-  // Return number of cross walks
-  // The cross walks are the diagonals of the intersection (a polygon)
-  // Therefore there are n(n-1)/2 cross walks
-  // Where n is the number of incoming roads
-  // n = max { number of entry roads ; number of exit roads } to account for situation
-  // when there is an unequal amount of entry and exit roads
- 
-  public int getNumberOfCrossWalks() {
-	  // Could have a different number of entry and exit roads
-	  // Number of cross walks is max{number of entry roads, number of exit roads}
-	  int n = Math.max(this.getNumberOfEntryRoads(), this.getNumberOfExitRoads());
-	  return n*(n-1)/2;
-  }
-  
 }
