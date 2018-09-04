@@ -546,4 +546,10 @@ public class BasicAutoVehicle extends BasicVehicle
       return driver.getTurnDirection();
   }
 
+  @Override
+  public void ping(){
+      //This vehicle must cancel it's reservation if it has one  andgo back
+      //into a planning state.
+      driver.cancel();
+  }
 }

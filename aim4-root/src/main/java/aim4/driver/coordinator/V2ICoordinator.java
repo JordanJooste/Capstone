@@ -1203,14 +1203,20 @@ public class V2ICoordinator implements Coordinator {
   private void processRejectMessage(Reject msg) {
     switch(state) {
     case V2I_MAINTAINING_RESERVATION:
-      if(msg.getReason().equals(Reject.Reason.NO_CLEAR_PATH)){
+      if(msg.getReason().equals(Reject.Reason.TRY_TO_SLOW_DOWN)){
           processRejectMessageForAwaitingResponseState(msg);
           break;
       }
     case V2I_AWAITING_RESPONSE:
+        if(msg.getReason().equals(Reject.Reason.TRY_TO_SLOW_DOWN)){
+            return;
+        }
       processRejectMessageForAwaitingResponseState(msg);
       break;
     default:
+        if(msg.getReason().equals(Reject.Reason.TRY_TO_SLOW_DOWN)){
+            return;
+        }
       
       System.err.printf("vin %d receives a reject message when it is not " +
                         "at the V2I_AWAITING_RESPONSE state\n",
@@ -1249,6 +1255,9 @@ public class V2ICoordinator implements Coordinator {
       // preparation in coordinator.
       throw new RuntimeException("V2ICoordinator: Arrival time of request " +
                                  "has already passed.");
+    case TRY_TO_SLOW_DOWN:
+        goBackToPlanningStateUponRejection(msg);
+        break;
     default:
       System.err.printf("%s\n", msg.getReason());
       throw new RuntimeException("V2ICoordinator: Unknown reason for " +
@@ -2129,6 +2138,24 @@ public class V2ICoordinator implements Coordinator {
       }catch(Exception e){
           return "On it's way to the exit";
       }
+  }
+  
+  public void cancel(double dist){
+      try{
+       //must check if far enough away from intersection to slow down
+       double stopDist = VehicleUtil.calcDistanceToStop(
+              vehicle.gaugeVelocity(),
+              vehicle.getSpec().getMaxDeceleration());
+       double simStopDistToIntersection = pilot.getStopDistanceToIntersection();
+      if(state.equals(State.V2I_MAINTAINING_RESERVATION)&&dist>(stopDist)){ 
+        sendCancelMessage(latestReservationNumber);
+        removeReservationParameter();
+        // remove the acceleration profile.
+        vehicle.removeAccelSchedule();
+        setState(State.V2I_PLANNING);
+      }
+      }catch(Exception e){}
+      
   }
 
 }

@@ -498,6 +498,11 @@ public final class BasePolicy implements Policy, ExtendedBasePolicyCallback {
    */
   @Override
   public void sendRejectMsg(int vin, int latestRequestId, Reject.Reason reason){
+      if(reason.equals(Reject.Reason.TRY_TO_SLOW_DOWN)){
+          //reservationRecordRegistry.setNull(vin);
+          vinToReservationId.remove(vin);
+          im.getReservationGridManager().cancel(vin);
+      }
     im.sendI2VMessage(new Reject(im.getId(),
                                  vin,
                                  latestRequestId,
@@ -506,6 +511,10 @@ public final class BasePolicy implements Policy, ExtendedBasePolicyCallback {
                                  reason));
   }
 
+  @Override
+  public void notifyVehicles(int vin){
+      im.notifyVehicle(vin);
+  }
   /**
    * {@inheritDoc}
    */

@@ -412,7 +412,11 @@ public class ProxyVehicle extends BasicAutoVehicle
     nextRequestId++;
     return request;
   }
-
+  
+@Override
+  public void ping(){
+      
+  }
 }
 
 

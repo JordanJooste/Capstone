@@ -117,7 +117,7 @@ public class V2IManager extends IntersectionManager
   /** The number of bits this IntersectionManager has transmitted. */
   private int bitsTransmitted;
 
-
+  public List<Integer> pedestrianOutbox = new ArrayList<Integer>();
   // intersection
 
   /**
@@ -487,5 +487,10 @@ public class V2IManager extends IntersectionManager
     return laneShapes;
   }
 
+  
+@Override
+public void notifyVehicle(int vin){
+    pedestrianOutbox.add(vin);
+}
 
 }

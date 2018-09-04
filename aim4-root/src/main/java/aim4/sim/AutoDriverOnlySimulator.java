@@ -835,6 +835,13 @@ public class AutoDriverOnlySimulator implements Simulator {
     // Now deliver all the I2V messages
     for(IntersectionManager im : basicMap.getIntersectionManagers()) {
       V2IManager senderIM = (V2IManager)im;
+      for(int i : senderIM.pedestrianOutbox){
+          AutoVehicleSimView vehicle =
+          (AutoVehicleSimView)VinRegistry.getVehicleFromVIN(
+            i);
+          vehicle.ping();
+      }
+      senderIM.pedestrianOutbox.clear();
       for(Iterator<I2VMessage> i2vIter = senderIM.outboxIterator();
           i2vIter.hasNext();) {
         I2VMessage msg = i2vIter.next();
