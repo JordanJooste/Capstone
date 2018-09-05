@@ -131,7 +131,10 @@ public class AutoDriverOnlySimulator implements Simulator {
   private int totalBitsReceivedByCompletedVehicles;
   
   private ArrayList<PedestrianSpawnPoint> psps = new ArrayList<PedestrianSpawnPoint>();
-
+  private double pedestrianLevel;
+  private double maxWaitTime;
+  private int i = 0; // Used to control spawning of pedestrians in main algorithm
+  private int n = 100;
   public static CountDownLatch CountDown;
   
   
@@ -145,12 +148,14 @@ public class AutoDriverOnlySimulator implements Simulator {
    * @param basicMap             the map of the simulation
    */
   public AutoDriverOnlySimulator(BasicMap basicMap) {
-    this.basicMap = basicMap;
+    AutoDriverOnlySimulator.basicMap = basicMap;
     this.vinToVehicles = new HashMap<Integer,VehicleSimView>();
     currentTime = 0.0;
     numOfCompletedVehicles = 0;
     totalBitsTransmittedByCompletedVehicles = 0;
     totalBitsReceivedByCompletedVehicles = 0;
+    this.pedestrianLevel = basicMap.getPedestrianLevel();
+    this.maxWaitTime = basicMap.getMaxWaitTime();
   }
 
   /////////////////////////////////
@@ -162,9 +167,10 @@ public class AutoDriverOnlySimulator implements Simulator {
   /**
    * {@inheritDoc}
    */
+  
   @Override
   public synchronized AutoDriverOnlySimStepResult step(double timeStep) {
-    
+	
 	if (Debug.PRINT_SIMULATOR_STAGE) {
       System.err.printf("--------------------------------------\n");
       System.err.printf("------SIM:spawnVehicles---------------\n");
@@ -175,8 +181,13 @@ public class AutoDriverOnlySimulator implements Simulator {
         System.err.printf("--------------------------------------\n");
         System.err.printf("------SIM:spawnPedestrians---------------\n");
       }
-    spawnPedestrians(timeStep);
     
+    // Only spawn pedestrians every n sim steps
+    //i = i%n;
+    //if (i==0) {
+    	spawnPedestrians(timeStep);
+    //}
+    //i++;
     
     if (Debug.PRINT_SIMULATOR_STAGE) {
       System.err.printf("------SIM:provideSensorInput---------------\n");
@@ -216,7 +227,7 @@ public class AutoDriverOnlySimulator implements Simulator {
     currentTime += timeStep;
     // debug
     checkClocks();
-
+    
     return new AutoDriverOnlySimStepResult(completedVINs);
   }
 
@@ -406,7 +417,7 @@ public class AutoDriverOnlySimulator implements Simulator {
     driver.setSpawnPoint(spawnPoint);
     driver.setDestination(spawnSpec.getDestinationRoad());
     vehicle.setDriver(driver);
-
+    
     return vehicle;
   }
   
@@ -414,7 +425,7 @@ public class AutoDriverOnlySimulator implements Simulator {
   private void spawnPedestrians(double timeStep) {
 	  
 	  // for each intersection
-	  	// if intersection manager is a pedestrianRequestHandler
+	  	// if intersection manager is a pedestsrianRequestHandler
 	  		// for each PSP 0 -> 11
 	  			// spawn with probability p
 	  			// do nothing with probability 1-p
@@ -423,15 +434,15 @@ public class AutoDriverOnlySimulator implements Simulator {
 	  
 	  // Needed: All IM objects and the pedestrian level
 	  
-	  double p = basicMap.getPedestrianLevel();
-	  
-	  for (IntersectionManager im : basicMap.getIntersectionManagers()) {
-		  
+	  //for (IntersectionManager im : basicMap.getIntersectionManagers()) {
+
+	  	  IntersectionManager im = basicMap.getIntersectionManagers().get(i);
 		  Policy policy = ((V2IManager) im).getPolicy();
 	      if (policy instanceof BasePolicy) {
 	      BasePolicy basePolicy = (BasePolicy) policy;
 	    		  
 	      if (basePolicy.getRequestHandler() instanceof PedestrianRequestHandler) {
+	    	  
 	    	  
 	    	  PedestrianRequestHandler requestHandler = 
 		        		(PedestrianRequestHandler) basePolicy.getRequestHandler();	
@@ -443,8 +454,7 @@ public class AutoDriverOnlySimulator implements Simulator {
 	    	 }
 	      }
 	  }
-	  }  
-  }
+  }  
   
 
   /////////////////////////////////

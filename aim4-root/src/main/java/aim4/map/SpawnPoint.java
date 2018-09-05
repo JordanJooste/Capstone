@@ -103,7 +103,7 @@ public class SpawnPoint {
 
 
   /**
-   * The interface of the spawn specification genreator.
+   * The interface of the spawn specification generator.
    */
   public static interface SpawnSpecGenerator {
     /**

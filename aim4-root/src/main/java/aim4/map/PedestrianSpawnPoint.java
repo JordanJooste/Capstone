@@ -1,6 +1,6 @@
 package aim4.map;
-
 import java.awt.geom.Point2D;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -16,9 +16,9 @@ public class PedestrianSpawnPoint {
 	private double timeRemaining;
 	private double maxWaitTime;
 	
-	public PedestrianSpawnPoint(int id, double l, double maxWaitTime){
+	public PedestrianSpawnPoint(int id, double p, double maxWaitTime){
 		this.id = id;
-		this.p = l;
+		this.p = p;
 		this.timeRemaining = maxWaitTime;
 		this.pedestrians = new ArrayList<Pedestrian>();
 		this.maxWaitTime = maxWaitTime;
@@ -49,24 +49,26 @@ public class PedestrianSpawnPoint {
 		Random r = new Random();
 		
 		// Return random double between 0 and 100
-		double randomValue = 100 * r.nextDouble();
+		double randomValue =  10000 * r.nextDouble();
 
 		if (getTimeRemaining() <= 0) {
 			// Time is up
 			pedestrians.clear();
 			timeRemaining = maxWaitTime;
 		}
+		
 		else {
-			if (randomValue >= p) {
-				// This will run p% of the time
+			if (randomValue <= p) {
 				Pedestrian p = new Pedestrian();
 				pedestrians.add(p);
 			}
 			else {
-				// This will run (1-p)% of the time
 				// Do nothing
 			}
-			timeRemaining -= timeStep;
+			
+			if (pedestriansWaiting()) {
+				timeRemaining -= timeStep;
+			}
 		}
 	}
 	

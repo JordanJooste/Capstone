@@ -19,6 +19,7 @@ import aim4.sim.StatCollector;
 import java.util.ArrayList;
 
 public class PedestrianRequestHandler implements RequestHandler{
+  
   /////////////////////////////////
   // CONSTANTS
   /////////////////////////////////
@@ -65,13 +66,14 @@ public class PedestrianRequestHandler implements RequestHandler{
   /////////////////////////////////
   // CONSTRUCTOR
   /////////////////////////////////
-  public PedestrianRequestHandler(Intersection i,IntersectionManager im){
+  public PedestrianRequestHandler(Intersection i, IntersectionManager im, double pedestrianLevel, double maxWaitTime){
       intersection = i;
       this.im = im;
       left=right=top=bottom=topLeftToBottomRight=topRightToBottomLeft=stopAll=false;
       tracking=new ArrayList<Integer>();
-      
-      for (int x=0; x<12; x++) {
+      this.pedestrianLevel = pedestrianLevel;
+      this.maxWaitTime = maxWaitTime;
+      for (int x=0; x<=11; x++) {
     	  psps.add(new PedestrianSpawnPoint(x, pedestrianLevel, maxWaitTime));
       }
   } 
@@ -516,5 +518,13 @@ public class PedestrianRequestHandler implements RequestHandler{
   
   public ArrayList<PedestrianSpawnPoint> getPedestrianSpawnPoints(){
 	  return psps;
+  }
+  
+  public double getPedestrianLevel(){
+	  return pedestrianLevel;
+  }
+  
+  public double getMaxWaitTime(){
+	  return maxWaitTime;
   }
 }
