@@ -45,6 +45,6 @@ public interface AutoVehicleSimView extends AutoVehicleDriverView,
    */
   void setLRFSensing(boolean sensing);
 
-
+void ping();
 
 }

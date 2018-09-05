@@ -311,5 +311,11 @@ public class AutoDriver extends Driver
           pol.removeTracking(vin);
       }
   }
+  public void cancel(){
+      if(coordinator instanceof V2ICoordinator){
+          V2ICoordinator vc = (V2ICoordinator)coordinator;
+          vc.cancel(distanceToNextIntersection());
+      }
+  }
 }
 

@@ -87,4 +87,6 @@ public interface BasePolicyCallback {
 
   // TODO: remove this function
   TrackModel getTrackMode();
+  
+  void notifyVehicles(int vin);
 }

@@ -400,7 +400,8 @@ public class PedestrianRequestHandler implements RequestHandler{
   private void sendRejects(){
       for(Integer v : tracking){
           try{
-          basePolicy.sendRejectMsg(v,0, Reject.Reason.NO_CLEAR_PATH);
+            //notify vehicles that next step must revaluate path
+            basePolicy.notifyVehicles(v);
           }catch(Exception e){
               //Vehicle couln't slow down
           }

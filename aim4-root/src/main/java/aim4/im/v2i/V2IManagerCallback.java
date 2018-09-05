@@ -103,4 +103,6 @@ public interface V2IManagerCallback {
    */
   AczManager getAczManager(int laneId);
 
+  void notifyVehicle(int vin);
+
 }

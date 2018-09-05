@@ -342,4 +342,8 @@ public class V2IPilot extends BasicPilot {
   public void notifyIM(int vin){
       driver.notifyIM(vin);
   }
+  
+  public double getStopDistanceToIntersection(){
+      return stopDistanceBeforeIntersection;
+  }
 }

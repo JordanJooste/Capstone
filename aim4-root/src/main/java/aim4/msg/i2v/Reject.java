@@ -85,6 +85,8 @@ public class Reject extends I2VMessage {
      * the next allowed communication time in the previous reject messages.)
      */
     BEFORE_NEXT_ALLOWED_COMM,
+    
+    TRY_TO_SLOW_DOWN,
   };
 
   /////////////////////////////////

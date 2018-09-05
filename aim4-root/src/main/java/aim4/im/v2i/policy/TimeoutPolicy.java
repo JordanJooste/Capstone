@@ -64,7 +64,6 @@ public class TimeoutPolicy implements Policy, V2IManagerCallback {
    */
   private static final double DEFAULT_TIMEOUT_LENGTH = 1.0;
 
-
   /////////////////////////////////
   // NESTED CLASSES
   /////////////////////////////////
@@ -335,5 +334,8 @@ public class TimeoutPolicy implements Policy, V2IManagerCallback {
   public void removeTracking(int vin){
       
   }
-
+  @Override
+  public void notifyVehicle(int vin){
+      
+  }
 }
