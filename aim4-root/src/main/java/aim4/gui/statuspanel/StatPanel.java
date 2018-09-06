@@ -65,6 +65,9 @@ public class StatPanel extends JPanel
   /** The average amount of data received. */
   private FormattedLabel overallAverageReceivedLabel =
     new FormattedLabel("Average Data Received: ", "%5.2f kB", 8);
+  
+  private FormattedLabel overallCompletedPedestriansLabel =
+    new FormattedLabel("Completed Pedestrians: ", "%5d", 5);
 
   /** The viewer object */
   private Viewer viewer;
@@ -105,6 +108,10 @@ public class StatPanel extends JPanel
     c.gridwidth = GridBagConstraints.REMAINDER;
     gridbag.setConstraints(overallAverageReceivedLabel, c);
     add(overallAverageReceivedLabel);
+    //Completed Pedestrians
+    c.gridwidth = GridBagConstraints.REMAINDER;
+    gridbag.setConstraints(overallCompletedPedestriansLabel, c);
+    add(overallCompletedPedestriansLabel);
   }
 
   // ///////////////////////////////
@@ -130,6 +137,8 @@ public class StatPanel extends JPanel
       overallAverageReceivedLabel.update(sim
         .getAvgBitsReceivedByCompletedVehicles()
         / Constants.BITS_PER_KB);
+      //Completed Pedestrians
+      overallCompletedPedestriansLabel.update(sim.getNumCompletedPedestrians());
     } else {
       clear();
     }
