@@ -47,6 +47,7 @@ public class PedestrianSpawnPoint {
 	
 	private double crossTimeRemaining;
 	private double crossTime = 5;
+        PedestrianRequestHandler requestHandler;
 	
 	public PedestrianSpawnPoint(int id, double p, double maxWaitTime, PedestrianRequestHandler requestHandler){
 		this.id = id;
@@ -54,6 +55,7 @@ public class PedestrianSpawnPoint {
 		this.maxWaitTime = maxWaitTime;
 		this.pedestrians = new ArrayList<Pedestrian>();
 		this.timeRemaining = timeRemaining;
+                this.requestHandler = requestHandler;
 	}
 	
 	public int getID() {
@@ -67,7 +69,19 @@ public class PedestrianSpawnPoint {
 		return !pedestrians.isEmpty();
 	}
 	public void act(double timeStep) {
-		
+            Random r = new Random();
+            // Return random double between 0 and 100
+            double randomValue =  100000 * r.nextDouble();
+
+            if (randomValue <= p) {
+                    Pedestrian p = new Pedestrian();
+                    pedestrians.add(p);
+                    requestHandler.addPedestrianToWalk(id);
+            }
+            else {
+                    // Do nothing
+            }
+            /*
 		if (crossTimeRemaining > 0) {
 			// Pedestrians are currently crossing
 			crossTimeRemaining -= timeStep;
@@ -105,7 +119,7 @@ public class PedestrianSpawnPoint {
 					maxWaitTime -= timeStep;
 				}
 			}
-		}
+		}*/
 	}
 	
 	private void setCrossWalk() {

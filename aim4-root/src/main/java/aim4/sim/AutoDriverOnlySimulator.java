@@ -420,25 +420,27 @@ public class AutoDriverOnlySimulator implements Simulator {
   }
   
   // SPAWN PEDESTRIANS
-  private void spawnPedestrians(double timeStep) {
-	  
-	  IntersectionManager im = basicMap.getIntersectionManagers().get(i);
-	  Policy policy = ((V2IManager) im).getPolicy();
-	  if (policy instanceof BasePolicy) {
-	  BasePolicy basePolicy = (BasePolicy) policy;
-	  
-	  if (basePolicy.getRequestHandler() instanceof PedestrianRequestHandler) {
-	    	  
-		  PedestrianRequestHandler requestHandler = 
-				  (PedestrianRequestHandler) basePolicy.getRequestHandler();	
-	    	  
-	      psps = requestHandler.getPedestrianSpawnPoints();
-	      	  
-	      for (int i=0; i<=11; i++) {
-	    	 psps.get(i).act(timeStep); 
-	      }
-	  }
-	  }
+  private void spawnPedestrians(double timeStep) {       
+          for(IntersectionManager im : basicMap.getIntersectionManagers()){
+            if(im instanceof V2IManager){
+                Policy policy = ((V2IManager) im).getPolicy();
+                if (policy instanceof BasePolicy) {
+                BasePolicy basePolicy = (BasePolicy) policy;
+
+                if (basePolicy.getRequestHandler() instanceof PedestrianRequestHandler) {
+
+                        PedestrianRequestHandler requestHandler = 
+                                        (PedestrianRequestHandler) basePolicy.getRequestHandler();	
+
+                    psps = requestHandler.getPedestrianSpawnPoints();
+
+                    for (int i=0; i<=11; i++) {
+                       psps.get(i).act(timeStep); 
+                    }
+                }
+                }
+              }
+          }
   }  
   
 

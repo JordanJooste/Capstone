@@ -59,16 +59,13 @@ public class PedestrianRequestHandler implements RequestHandler{
   //private boolean topLeftToBottomRightWaiting;
   //private boolean topRightToBottomLeftWaiting;
   
-  private CrossWalk leftCW = new CrossWalk(0,11,this);
-  private CrossWalk rightCW = new CrossWalk(0,11,this);
-  private CrossWalk topCW = new CrossWalk(0,11,this);
-  private CrossWalk bottomCW = new CrossWalk(0,11,this);
-  private CrossWalk topRightToBottomLeftCW = new CrossWalk(0,11,this);
-  private CrossWalk topLeftToBottomRightCW = new CrossWalk(0,11,this);
-  
   
   // Spawn point variables
   private ArrayList<PedestrianSpawnPoint> psps = new ArrayList<PedestrianSpawnPoint>();
+  
+  //Crosswalks
+  private ArrayList<CrossWalk> walks = new ArrayList<CrossWalk>();
+  
   private double pedestrianLevel;
   private double maxWaitTime;
   
@@ -92,6 +89,12 @@ public class PedestrianRequestHandler implements RequestHandler{
       for (int x=0; x<=11; x++) {
     	  psps.add(new PedestrianSpawnPoint(x, pedestrianLevel, maxWaitTime, this));
       }
+      walks.add(new CrossWalk(0,0,11,this)); //CrossWalk 0
+      walks.add(new CrossWalk(1,2,3,this)); //CrossWalk 1
+      walks.add(new CrossWalk(2,5,6,this));// ...
+      walks.add(new CrossWalk(3,8,9,this));
+      walks.add(new CrossWalk(4,1,7,this));
+      walks.add(new CrossWalk(5,4,10,this));
   } 
   
   /////////////////////////////////
@@ -120,6 +123,22 @@ public class PedestrianRequestHandler implements RequestHandler{
 
       nextSwitchTime = basePolicy.getCurrentTime() + SWITCH_TIME_INTERVAL;
     }
+  }
+  
+  public void addPedestrianToWalk(int spawnID){
+      if (spawnID == 0 || spawnID == 11)
+          walks.get(0).addPedestrian();
+      if (spawnID == 2 || spawnID == 3)
+          walks.get(1).addPedestrian();
+      if (spawnID == 5 || spawnID == 6)
+          walks.get(2).addPedestrian();
+      if (spawnID == 8 || spawnID == 9)
+          walks.get(3).addPedestrian();
+      if (spawnID ==1 || spawnID == 7)
+          walks.get(4).addPedestrian();
+      if (spawnID == 4 || spawnID == 10)
+          walks.get(5).addPedestrian();
+      
   }
 
   /**
