@@ -115,9 +115,9 @@ public class AutoDriverOnlyParamPanel extends JPanel {
     add(pedestrians);
     
     maxWait = new LabeledSlider(0.0, 100.0,
-                        50.0,
+                        10.0,
                         20, 5,
-                        "Max wit time for pedestrians: %.0f seconds",
+                        "Maximum wait time for pedestrians: %.0f seconds",
                         "%.0f");
     add(maxWait);
 

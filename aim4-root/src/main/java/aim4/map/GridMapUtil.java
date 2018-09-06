@@ -37,6 +37,8 @@ import java.util.List;
 import aim4.config.Debug;
 import aim4.config.SimConfig;
 import aim4.config.TrafficSignalPhase;
+import aim4.im.Intersection;
+import aim4.im.IntersectionManager;
 import aim4.im.RoadBasedIntersection;
 import aim4.im.RoadBasedTrackModel;
 import aim4.im.v2i.RequestHandler.ApproxSimpleTrafficSignalRequestHandler;
@@ -47,6 +49,7 @@ import aim4.im.v2i.RequestHandler.ApproxNPhasesTrafficSignalRequestHandler;
 import aim4.im.v2i.RequestHandler.ApproxNPhasesTrafficSignalRequestHandler.CyclicSignalController;
 import aim4.im.v2i.RequestHandler.BatchModeRequestHandler;
 import aim4.im.v2i.RequestHandler.FCFSRequestHandler;
+import aim4.im.v2i.RequestHandler.PedestrianRequestHandler;
 import aim4.im.v2i.RequestHandler.RequestHandler;
 import aim4.im.v2i.batch.RoadBasedReordering;
 import aim4.im.v2i.policy.BasePolicy;
@@ -618,6 +621,27 @@ public class GridMapUtil {
           sp.getLane().getId() * traversalTime * numOfTraversals,
           traversalTime));
     }
+  }
+  
+  public static void setPedestrianManagers(GridMap layout,
+          double currentTime,
+          ReservationGridManager.Config config) {
+	  
+	  layout.removeAllManagers();
+	  for(int column = 0; column < layout.getColumns(); column++) {
+		  for(int row = 0; row < layout.getRows(); row++) {
+			  List<Road> roads = layout.getRoads(column, row);
+			  RoadBasedIntersection intersection = new RoadBasedIntersection(roads);
+			  RoadBasedTrackModel trajectoryModel =
+					  new RoadBasedTrackModel(intersection);
+			  V2IManager im =
+					  new V2IManager(intersection, trajectoryModel, currentTime,
+							  config, layout.getImRegistry());
+			  im.setPolicy(new BasePolicy(im, new PedestrianRequestHandler(intersection, im, Debug.currentMap.getPedestrianLevel(), Debug.currentMap.getMaxWaitTime())));
+			  //Intersection i, IntersectionManager im, double pedestrianLevel, double maxWaitTime
+			  layout.setManager(column, row, im);
+		  }
+	  }
   }
 
 }

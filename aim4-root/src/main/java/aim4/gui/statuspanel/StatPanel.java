@@ -68,6 +68,9 @@ public class StatPanel extends JPanel
   
   private FormattedLabel overallCompletedPedestriansLabel =
     new FormattedLabel("Completed Pedestrians: ", "%5d", 5);
+  
+  private FormattedLabel averageWaitTimeLabel =
+		    new FormattedLabel("Average Pedestrian Wait Time: ", "%5.2f", 5);
 
   /** The viewer object */
   private Viewer viewer;
@@ -112,8 +115,11 @@ public class StatPanel extends JPanel
     c.gridwidth = GridBagConstraints.REMAINDER;
     gridbag.setConstraints(overallCompletedPedestriansLabel, c);
     add(overallCompletedPedestriansLabel);
+    // Average wait time
+    c.gridwidth = GridBagConstraints.REMAINDER;
+    gridbag.setConstraints(averageWaitTimeLabel, c);
+    add(averageWaitTimeLabel);
   }
-
   // ///////////////////////////////
   // PUBLIC METHODS
   // ///////////////////////////////
@@ -139,6 +145,8 @@ public class StatPanel extends JPanel
         / Constants.BITS_PER_KB);
       //Completed Pedestrians
       overallCompletedPedestriansLabel.update(sim.getNumCompletedPedestrians());
+      // Average wait time
+      averageWaitTimeLabel.update(sim.getAverageWaitTime());
     } else {
       clear();
     }
@@ -153,5 +161,7 @@ public class StatPanel extends JPanel
     overallCompletedVehiclesLabel.clear();
     overallAverageTransmittedLabel.clear();
     overallAverageReceivedLabel.clear();
+    overallCompletedPedestriansLabel.clear();
+    averageWaitTimeLabel.clear();
   }
 }

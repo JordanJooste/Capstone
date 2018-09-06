@@ -2,21 +2,16 @@
 Copyright (c) 2011 Tsz-Chiu Au, Peter Stone
 University of Texas at Austin
 All rights reserved.
-
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
-
 1. Redistributions of source code must retain the above copyright notice, this
 list of conditions and the following disclaimer.
-
 2. Redistributions in binary form must reproduce the above copyright notice,
 this list of conditions and the following disclaimer in the documentation
 and/or other materials provided with the distribution.
-
 3. Neither the name of the University of Texas at Austin nor the names of its
 contributors may be used to endorse or promote products derived from this
 software without specific prior written permission.
-
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -46,7 +41,6 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
-
 import aim4.config.Debug;
 import aim4.config.DebugPoint;
 import aim4.driver.AutoDriver;
@@ -55,11 +49,9 @@ import aim4.driver.ProxyDriver;
 import aim4.im.IntersectionManager;
 import aim4.im.v2i.RequestHandler.CrossWalk;
 import aim4.im.v2i.V2IManager;
-import aim4.im.v2i.RequestHandler.CrossWalk;
 import aim4.im.v2i.RequestHandler.PedestrianRequestHandler;
 import aim4.im.v2i.policy.BasePolicy;
 import aim4.im.v2i.policy.Policy;
-import aim4.map.DataCollectionLine;
 import aim4.map.PedestrianSpawnPoint;
 import aim4.map.BasicMap;
 import aim4.map.Road;
@@ -68,7 +60,6 @@ import aim4.map.SpawnPoint.SpawnSpec;
 import aim4.map.lane.Lane;
 import aim4.msg.i2v.I2VMessage;
 import aim4.msg.v2i.V2IMessage;
-import aim4.pedestrian.Pedestrian;
 import aim4.vehicle.AutoVehicleSimView;
 import aim4.vehicle.BasicAutoVehicle;
 import aim4.vehicle.HumanDrivenVehicleSimView;
@@ -76,7 +67,6 @@ import aim4.vehicle.ProxyVehicleSimView;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VinRegistry;
 import aim4.vehicle.VehicleSimView;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -127,7 +117,7 @@ public class AutoDriverOnlySimulator implements Simulator {
   private double currentTime;
   /** The number of completed vehicles */
   private int numOfCompletedVehicles;
-  
+  /** The number of copmleted pedestrians */
   private int numOfCompletedPedestrians;
   /** The total number of bits transmitted by the completed vehicles */
   private int totalBitsTransmittedByCompletedVehicles;
@@ -135,9 +125,8 @@ public class AutoDriverOnlySimulator implements Simulator {
   private int totalBitsReceivedByCompletedVehicles;
   
   private ArrayList<PedestrianSpawnPoint> psps = new ArrayList<PedestrianSpawnPoint>();
-  private int i = 0; // Used to control spawning of pedestrians in main algorithm
-  private int n = 100;
   public static CountDownLatch CountDown;
+  
   
   /////////////////////////////////
   // CLASS CONSTRUCTORS
@@ -181,14 +170,9 @@ public class AutoDriverOnlySimulator implements Simulator {
         System.err.printf("------SIM:spawnPedestrians---------------\n");
       }
     
-    // Only spawn pedestrians every n sim steps
-    //i = i%n;
-    //if (i==0) {
     spawnPedestrians(timeStep);
     
     crossWalksAct(timeStep);
-    //}
-    //i++;
     
     if (Debug.PRINT_SIMULATOR_STAGE) {
       System.err.printf("------SIM:provideSensorInput---------------\n");
@@ -753,9 +737,6 @@ public class AutoDriverOnlySimulator implements Simulator {
       return interval;
     }
   }
-  // Kurt's code:
-  // interval = vehicle.getPosition().
-  //   distance(nextVehicle.get(vehicle).getPointAtRear());
 
 
   /**
@@ -764,34 +745,7 @@ public class AutoDriverOnlySimulator implements Simulator {
    * @param vehicle  the vehicle
    */
   private void provideTrafficLightSignal(HumanDrivenVehicleSimView vehicle) {
-    // TODO: implement it later
-//    DriverSimView driver = vehicle.getDriver();
-//    Lane currentLane = driver.getCurrentLane();
-//    Point2D pos = vehicle.getPosition();
-//    IntersectionManager im = currentLane.getLaneIM().
-//                             nextIntersectionManager(pos);
-//    if (im != null) {
-//      if (im instanceof LightOnlyManager) {
-//        LightOnlyManager lightOnlyIM = (LightOnlyManager)im;
-//        if (!im.getIntersection().getArea().contains(pos)) {
-//          LightState s = lightOnlyIM.getLightState(currentLane);
-//          vehicle.setLightState(s);
-//          if (driver instanceof HumanDriver) {
-//            ((HumanDriver)driver).setLightState(s);
-//          }
-//        } else {
-//          vehicle.setLightState(null);
-//          if (driver instanceof HumanDriver) {
-//            ((HumanDriver)driver).setLightState(null);
-//          }
-//        }
-//      }
-//    } else {
-//      vehicle.setLightState(null);
-//      if (driver instanceof HumanDriver) {
-//        ((HumanDriver)driver).setLightState(null);
-//      }
-//    }
+    
   }
 
   /////////////////////////////////
@@ -906,81 +860,8 @@ public class AutoDriverOnlySimulator implements Simulator {
       senderIM.clearOutbox();
     }
   }
-
-//  private void deliverV2VMessages() {
-//
-//    // Create a place to store broadcast messages until they can be sent so
-//    // that we don't have to run through the list of Vehicles for each one
-//    List<V2VMessage> broadcastMessages = new ArrayList<V2VMessage>();
-//
-//    // Go through each vehicle and deliver each of its messages
-//    for(VehicleSimView vehicle : vinToVehicles.values()) {
-//      // Then do V2V messages.
-//      if (vehicle instanceof AutoVehicleSimView) {
-//        AutoVehicleSimView sender = (AutoVehicleSimView)vehicle;
-//        for(V2VMessage msg : sender.getV2VOutbox()) {
-//          if(msg.isBroadcast()) {
-//            // If it's a broadcast message, we save it and worry about it later
-//            broadcastMessages.add(msg);
-//          } else {
-//            // Otherwise, we just deliver it! Woo!
-//            // TODO: need to check whether the vehicle is AutoVehicleSpec
-//            AutoVehicleSimView receiver =
-//              (AutoVehicleSimView)VinRegistry.getVehicleFromVIN(
-//                msg.getDestinationID());
-//            // Calculate the distance the message must travel
-//            double txDistance =
-//              sender.getPosition().distance(receiver.getPosition());
-//            // Find out if the message will make it that far
-//            if(transmit(txDistance, sender.getTransmissionPower())) {
-//              // Actually deliver the message
-//              receiver.receive(msg);
-//              // Add the delivery to the debugging information
-//            }
-//          }
-//        }
-//        // Done delivering the V2V messages (except broadcast which we will
-//        // handle in a moment), so clear the outbox
-//        sender.getV2VOutbox().clear();
-//      }
-//    }
-//    // Now go through the vehicles and deliver the broadcast messages
-//    for(V2VMessage msg : broadcastMessages) {
-//      // Send a copy to the IM for debugging/statistics purposes
-//      IntersectionManager im =
-//        basicMap.getImRegistry().get(msg.getIntersectionManagerID());
-////      if(im != null) {
-////        switch(im.getIntersectionType()) {
-////        case V2V:
-////          ((V2VManager) im).logBroadcast(msg);
-////        }
-////      }
-//      // Determine who sent this message
-//      // TODO: need to check whether the vehicle is AutoVehicleSpec
-//      AutoVehicleSimView sender =
-//        (AutoVehicleSimView)VinRegistry.getVehicleFromVIN(
-//          msg.getSourceID());
-//      // Deliver to each vehicle
-//      for(VehicleSimView vehicle : vinToVehicles.values()) {
-//        if (vehicle instanceof AutoVehicleSimView) {
-//          AutoVehicleSimView receiver = (AutoVehicleSimView)vehicle;
-//          // Except the one that sent it
-//          if(sender != receiver) {
-//            // Find out how far away they are
-//            double txDistance =
-//              sender.getPosition().distance(receiver.getPosition());
-//            // See if this Vehicle is close enough to receive the message
-//            if(transmit(txDistance, sender.getTransmissionPower())) {
-//              // Actually deliver the message
-//              receiver.receive(msg);
-//            }
-//          }
-//        } // else ignore other non-autonomous vehicle
-//      }
-//    }
-//  }
-
-
+  
+  
   /**
    * Whether the transmission of a message is successful
    *
@@ -1069,4 +950,18 @@ public class AutoDriverOnlySimulator implements Simulator {
       im.checkCurrentTime(currentTime);
     }
   }
+  
+  public int getNumOfCompletedPedestrians() {
+	  return numOfCompletedPedestrians;
+  }
+  
+  public double getAverageWaitTime() {
+	  if (numOfCompletedPedestrians != 0) {
+		  return currentTime / numOfCompletedPedestrians;
+	  }
+	  else return 0;
+  }
+  
+
+
 }

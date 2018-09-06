@@ -43,6 +43,7 @@ import java.awt.Graphics;
 public interface Simulator {
 
     public int getNumCompletedPedestrians();
+    public double getAverageWaitTime();
 
   /**
    * An interface denoting the result of a simulation step.
@@ -113,4 +114,5 @@ public interface Simulator {
    * @param vehicle  the proxy vehicle
    */
   void addProxyVehicle(ProxyVehicleSimView vehicle);
+
 }

@@ -130,16 +130,19 @@ public class SimSetupPanel extends JPanel implements ItemListener {
    * @return the simulation setup object
    */
   public SimSetup getSimSetup() {
-    if (comboBox.getSelectedIndex() == 0) {
+    if (comboBox.getSelectedIndex() == 0) { // Runs if "Aim Protocol" is selected
+      
       AutoDriverOnlySimSetup simSetup2 = new AutoDriverOnlySimSetup(simSetup);
       simSetup2.setTrafficLevel(autoDriverOnlySetupPanel.getTrafficRate());
       simSetup2.setSpeedLimit(autoDriverOnlySetupPanel.getSpeedLimit());
-      simSetup2.setStopDistBeforeIntersection(
-        autoDriverOnlySetupPanel.getStopDistToIntersection());
+      simSetup2.setStopDistBeforeIntersection(autoDriverOnlySetupPanel.getStopDistToIntersection());
       simSetup2.setNumOfColumns(autoDriverOnlySetupPanel.getNumOfColumns());
       simSetup2.setNumOfRows(autoDriverOnlySetupPanel.getNumOfRows());
       simSetup2.setLanesPerRoad(autoDriverOnlySetupPanel.getLanesPerRoad());
+      simSetup2.setPedestrianLevel(autoDriverOnlySetupPanel.getPedestrianLevel());
+      simSetup2.setMaxWaitTime(autoDriverOnlySetupPanel.getMaxWaitTime());
       return simSetup2;
+    
     } else if (comboBox.getSelectedIndex() == 1) {
       // ApproxNPhasesTrafficSignalSimSetup simSetup2 =
       //  new ApproxNPhasesTrafficSignalSimSetup(simSetup,
@@ -152,13 +155,18 @@ public class SimSetupPanel extends JPanel implements ItemListener {
 
       simSetup2.setLanesPerRoad(trafficSignalSetupPanel.getLanesPerRoad());
       simSetup2.setStopDistBeforeIntersection(1.0);
+      simSetup2.setPedestrianLevel(autoDriverOnlySetupPanel.getPedestrianLevel());
+      simSetup2.setMaxWaitTime(autoDriverOnlySetupPanel.getMaxWaitTime());
       return simSetup2;
+    
     } else if (comboBox.getSelectedIndex() == 2) {
       ApproxStopSignSimSetup simSetup2 =
         new ApproxStopSignSimSetup(simSetup);
       simSetup2.setTrafficLevel(autoDriverOnlySetupPanel.getTrafficRate());
       simSetup2.setStopDistBeforeIntersection(
         autoDriverOnlySetupPanel.getStopDistToIntersection());
+      simSetup2.setPedestrianLevel(autoDriverOnlySetupPanel.getPedestrianLevel());
+      simSetup2.setMaxWaitTime(autoDriverOnlySetupPanel.getMaxWaitTime());
       return simSetup2;
     } else {
       throw new RuntimeException(

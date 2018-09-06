@@ -43,6 +43,8 @@ import aim4.config.Debug;
 import aim4.im.Intersection;
 import aim4.im.IntersectionManager;
 import aim4.im.TrackModel;
+import aim4.im.v2i.RequestHandler.PedestrianRequestHandler;
+import aim4.im.v2i.policy.BasePolicy;
 import aim4.im.v2i.policy.Policy;
 import aim4.im.v2i.reservation.AczManager;
 import aim4.im.v2i.reservation.AdmissionControlZone;
@@ -188,6 +190,12 @@ public class V2IManager extends IntersectionManager
       aczManagers.put(l.getId(), new AczManager(acz));
     }
     
+    // If pedestrian level is initialized at a non-zero value, run in pedestrian mode
+    //if (Debug.currentMap.getPedestrianLevel() > 0) {
+    	//PedestrianRequestHandler p = new PedestrianRequestHandler(this.getIntersection(),this, Debug.currentMap.getPedestrianLevel(), Debug.currentMap.getMaxWaitTime());
+    	//BasePolicy policy = new BasePolicy(this, p);
+        //this.setPolicy(policy);
+    	//}
   }
 
 

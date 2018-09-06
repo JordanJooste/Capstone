@@ -210,7 +210,7 @@ public class BasicSimSetup implements SimSetup {
   /**
    * Get the pedestrian level.
    *
-   * @return the traffic level
+   * @return the pedestrian level
    */
   public double getPedestrianLevel() {
     return pedestrianLevel;

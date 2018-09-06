@@ -87,6 +87,11 @@ public class AutoDriverOnlySimSetup extends BasicSimSetup implements SimSetup {
   private double processingInterval = RoadBasedReordering.DEFAULT_PROCESSING_INTERVAL;
   /** The name of the file about the traffic volume */
   private String trafficVolumeFileName = null;
+  /** The pedestrian level */
+  private int pedestrianLevel;
+  /** The pedestrian level */
+  private int maxWaitTime;
+  
 
   /////////////////////////////////
   // CONSTRUCTORS
@@ -278,39 +283,84 @@ public class AutoDriverOnlySimSetup extends BasicSimSetup implements SimSetup {
 */
 
     Debug.SHOW_VEHICLE_COLOR_BY_MSG_STATE = true;
+    
+    if (Debug.currentMap.getPedestrianLevel() == 0) { 
+    	
+    	// Run FCFS
+    	
+    	if (!isBaseLineMode) {
+    	      if (isBatchMode) {
+    	        GridMapUtil.setBatchManagers(layout, currentTime, gridConfig,
+    	                                        processingInterval);
+    	      } else {
+    	        GridMapUtil.setFCFSManagers(layout, currentTime, gridConfig);
+    	      }
 
-    if (!isBaseLineMode) {
-      if (isBatchMode) {
-        GridMapUtil.setBatchManagers(layout, currentTime, gridConfig,
-                                        processingInterval);
-      } else {
-        GridMapUtil.setFCFSManagers(layout, currentTime, gridConfig);
-      }
-
-      switch(trafficType) {
-      case UNIFORM_RANDOM:
-        GridMapUtil.setUniformRandomSpawnPoints(layout, trafficLevel);
-        break;
-      case UNIFORM_TURNBASED:
-        GridMapUtil.setUniformTurnBasedSpawnPoints(layout, trafficLevel);
-        break;
-      case HVDIRECTIONAL_RANDOM:
-        GridMapUtil.setDirectionalSpawnPoints(layout,
-                                                 hTrafficLevel,
-                                                 vTrafficLevel);
-        break;
-      case FILE:
-        GridMapUtil.setUniformRatioSpawnPoints(layout, trafficVolumeFileName);
-        break;
-      }
-    } else {
-      GridMapUtil.setFCFSManagers(layout, currentTime, gridConfig);
-      GridMapUtil.setBaselineSpawnPoints(layout, 12.0);
+    	      switch(trafficType) {
+    	      case UNIFORM_RANDOM:
+    	        GridMapUtil.setUniformRandomSpawnPoints(layout, trafficLevel);
+    	        break;
+    	      case UNIFORM_TURNBASED:
+    	        GridMapUtil.setUniformTurnBasedSpawnPoints(layout, trafficLevel);
+    	        break;
+    	      case HVDIRECTIONAL_RANDOM:
+    	        GridMapUtil.setDirectionalSpawnPoints(layout,
+    	                                                 hTrafficLevel,
+    	                                                 vTrafficLevel);
+    	        break;
+    	      case FILE:
+    	        GridMapUtil.setUniformRatioSpawnPoints(layout, trafficVolumeFileName);
+    	        break;
+    	      }
+    	    } else {
+    	      GridMapUtil.setFCFSManagers(layout, currentTime, gridConfig);
+    	      GridMapUtil.setBaselineSpawnPoints(layout, 12.0);
+    	    }
     }
+    
+    else { 
+    	
+    	// Pedestrian mode
+    	
+    	if (!isBaseLineMode) {
+  	      if (isBatchMode) {
+  	        GridMapUtil.setBatchManagers(layout, currentTime, gridConfig,
+  	                                        processingInterval);
+  	      } else {
+  	        GridMapUtil.setPedestrianManagers(layout, currentTime, gridConfig);
+  	      }
 
-
+  	      switch(trafficType) {
+  	      case UNIFORM_RANDOM:
+  	        GridMapUtil.setUniformRandomSpawnPoints(layout, trafficLevel);
+  	        break;
+  	      case UNIFORM_TURNBASED:
+  	        GridMapUtil.setUniformTurnBasedSpawnPoints(layout, trafficLevel);
+  	        break;
+  	      case HVDIRECTIONAL_RANDOM:
+  	        GridMapUtil.setDirectionalSpawnPoints(layout,
+  	                                                 hTrafficLevel,
+  	                                                 vTrafficLevel);
+  	        break;
+  	      case FILE:
+  	        GridMapUtil.setUniformRatioSpawnPoints(layout, trafficVolumeFileName);
+  	        break;
+  	      }
+  	    } else {
+  	      GridMapUtil.setPedestrianManagers(layout, currentTime, gridConfig);
+  	      GridMapUtil.setBaselineSpawnPoints(layout, 12.0);
+  	    }
+      
+  }
     V2IPilot.DEFAULT_STOP_DISTANCE_BEFORE_INTERSECTION =
       stopDistBeforeIntersection;
     return new AutoDriverOnlySimulator(layout);
+  }
+  
+  public void setPedestrianLevel(int p) {
+	  this.pedestrianLevel = p;
+  }
+  public void setMaxWaitTime(int m) {
+	  this.maxWaitTime = m;
   }
 }
