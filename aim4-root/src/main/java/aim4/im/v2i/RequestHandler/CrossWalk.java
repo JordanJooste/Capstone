@@ -152,5 +152,9 @@ public class CrossWalk {
 	public boolean getWaiting(){
 		return waiting;
 	}
+	
+	public int getID() {
+		return id;
+	}
 }
 

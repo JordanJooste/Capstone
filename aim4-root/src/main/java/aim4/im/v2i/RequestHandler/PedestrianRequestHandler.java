@@ -63,7 +63,7 @@ public class PedestrianRequestHandler implements RequestHandler{
   // Spawn point variables
   private ArrayList<PedestrianSpawnPoint> psps = new ArrayList<PedestrianSpawnPoint>();
   
-  //Crosswalks
+  //Cross walks
   private ArrayList<CrossWalk> walks = new ArrayList<CrossWalk>();
   
   private double pedestrianLevel;
@@ -645,6 +645,10 @@ public class PedestrianRequestHandler implements RequestHandler{
   
   public double getMaxWaitTime(){
 	  return maxWaitTime;
+  }
+  
+  public ArrayList<CrossWalk> getCrossWalks() {
+	  return walks;
   }
   
   // getXWaiting() == YELLOW
