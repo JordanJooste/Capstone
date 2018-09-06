@@ -28,13 +28,14 @@ public class CrossWalk {
 	// The PedestrianRequestHandler of this intersection
 	PedestrianRequestHandler r;
 	
-	public CrossWalk(int id, int a, int b, PedestrianRequestHandler r) {
+	public CrossWalk(int id, int a, int b, PedestrianRequestHandler r,  double maxWaitTime) {
 		this.a = a;
 		this.b = b;
                 this.id = id;
 		this.crossing = false;
 		this.waiting = false;
 		this.r = r;
+                this.maxWaitTime = maxWaitTime;
                 noOfPedestriansWaiting = 0;
                 noOfPedestriansCrossing = 0;
                 waitCarTime = 10;
@@ -49,11 +50,15 @@ public class CrossWalk {
                 rmwt = maxWaitTime;
                 rwct = waitCarTime;
                 rct = crossTime;  
+                waiting = false;
+                crossing = false;
             }else if(noOfPedestriansWaiting ==0 && noOfPedestriansCrossing>0){
                 //No one waiting but people crossing.
                 //Don't reset crossing timer
                 rmwt = maxWaitTime;
-                rwct = waitCarTime;  
+                rwct = waitCarTime; 
+                crossing = true;
+                waiting = false;
             }
             noOfPedestriansWaiting++;
         }
@@ -86,7 +91,7 @@ public class CrossWalk {
                 }else if(id == 5){
                     r.setTopRightToBottomLeft();
                 }
-                
+                rmwt = maxWaitTime;
                 waiting = true;
             }
             if(rwct<=0){
@@ -95,6 +100,7 @@ public class CrossWalk {
                 waiting = false;
                 noOfPedestriansCrossing = noOfPedestriansWaiting;
                 noOfPedestriansWaiting = 0;
+                rwct=waitCarTime;
             }
             if(rct<=0){
                 //People finished crossing
@@ -113,7 +119,9 @@ public class CrossWalk {
                 }else if(id == 5){
                     r.setTopRightToBottomLeft();
                 }
+                rct = crossTime;
                 //Store this in some grand total of pedestrians crossed...
+                
                 noOfPedestriansCrossing = 0;
             }
             

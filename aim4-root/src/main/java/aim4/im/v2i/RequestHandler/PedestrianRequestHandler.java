@@ -89,12 +89,12 @@ public class PedestrianRequestHandler implements RequestHandler{
       for (int x=0; x<=11; x++) {
     	  psps.add(new PedestrianSpawnPoint(x, pedestrianLevel, maxWaitTime, this));
       }
-      walks.add(new CrossWalk(0,0,11,this)); //CrossWalk 0
-      walks.add(new CrossWalk(1,2,3,this)); //CrossWalk 1
-      walks.add(new CrossWalk(2,5,6,this));// ...
-      walks.add(new CrossWalk(3,8,9,this));
-      walks.add(new CrossWalk(4,1,7,this));
-      walks.add(new CrossWalk(5,4,10,this));
+      walks.add(new CrossWalk(0,0,11,this,maxWaitTime)); //CrossWalk 0
+      walks.add(new CrossWalk(1,2,3,this,maxWaitTime)); //CrossWalk 1
+      walks.add(new CrossWalk(2,5,6,this,maxWaitTime));// ...
+      walks.add(new CrossWalk(3,8,9,this,maxWaitTime));
+      walks.add(new CrossWalk(4,1,7,this,maxWaitTime));
+      walks.add(new CrossWalk(5,4,10,this,maxWaitTime));
   } 
   
   /////////////////////////////////
