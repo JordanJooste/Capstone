@@ -1434,8 +1434,8 @@ public class Canvas extends JPanel implements ComponentListener,
 	    					buffer.draw(lineID.get(i));
 	    				}
 	    			}
-	    			buffer.setPaint(Color.GREEN);
-	    			buffer.draw(lineID.get(i));
+	    			//buffer.setPaint(Color.GREEN);
+	    			//buffer.draw(lineID.get(i));
 	    			}
 	    		}
 	    		

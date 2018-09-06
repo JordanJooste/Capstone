@@ -53,6 +53,7 @@ import aim4.driver.AutoDriver;
 import aim4.driver.DriverSimView;
 import aim4.driver.ProxyDriver;
 import aim4.im.IntersectionManager;
+import aim4.im.v2i.RequestHandler.CrossWalk;
 import aim4.im.v2i.V2IManager;
 import aim4.im.v2i.RequestHandler.CrossWalk;
 import aim4.im.v2i.RequestHandler.PedestrianRequestHandler;
@@ -126,6 +127,8 @@ public class AutoDriverOnlySimulator implements Simulator {
   private double currentTime;
   /** The number of completed vehicles */
   private int numOfCompletedVehicles;
+  
+  private int numOfCompletedPedestrians;
   /** The total number of bits transmitted by the completed vehicles */
   private int totalBitsTransmittedByCompletedVehicles;
   /** The total number of bits received by the completed vehicles */
@@ -182,6 +185,8 @@ public class AutoDriverOnlySimulator implements Simulator {
     //i = i%n;
     //if (i==0) {
     spawnPedestrians(timeStep);
+    
+    crossWalksAct(timeStep);
     //}
     //i++;
     
@@ -255,6 +260,11 @@ public class AutoDriverOnlySimulator implements Simulator {
   @Override
   public synchronized int getNumCompletedVehicles() {
     return numOfCompletedVehicles;
+  }
+  
+  @Override
+  public synchronized int getNumCompletedPedestrians(){
+      return numOfCompletedPedestrians;
   }
 
   /**
@@ -440,6 +450,27 @@ public class AutoDriverOnlySimulator implements Simulator {
               }
           }
   }  
+  
+  private void crossWalksAct(double timeStep){
+      for(IntersectionManager im : basicMap.getIntersectionManagers()){
+          if (im instanceof V2IManager){
+              Policy policy = ((V2IManager) im).getPolicy();
+                if (policy instanceof BasePolicy) {
+                BasePolicy basePolicy = (BasePolicy) policy;
+
+                if (basePolicy.getRequestHandler() instanceof PedestrianRequestHandler) {
+
+                        PedestrianRequestHandler requestHandler = 
+                                        (PedestrianRequestHandler) basePolicy.getRequestHandler();
+                        ArrayList<CrossWalk> crossWalks = requestHandler.getCrossWalks();
+                        for(CrossWalk cw : crossWalks){
+                            numOfCompletedPedestrians+=cw.act(timeStep);
+                        }
+                }
+                }
+          }
+      }
+  }
   
 
   /////////////////////////////////

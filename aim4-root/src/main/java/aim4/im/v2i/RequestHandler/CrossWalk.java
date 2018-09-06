@@ -28,17 +28,28 @@ public class CrossWalk {
 	// The PedestrianRequestHandler of this intersection
 	PedestrianRequestHandler r;
 	
-	public CrossWalk(int id, int a, int b, PedestrianRequestHandler r) {
+	public CrossWalk(int id, int a, int b, PedestrianRequestHandler r,  double maxWaitTime) {
 		this.a = a;
 		this.b = b;
                 this.id = id;
 		this.crossing = false;
 		this.waiting = false;
 		this.r = r;
+                
                 noOfPedestriansWaiting = 0;
                 noOfPedestriansCrossing = 0;
-                waitCarTime = 10;
-                crossTime = 5;
+                
+                
+                if(id == 4 || id == 5){
+                    //Specific time for diagonals
+                    this.maxWaitTime = maxWaitTime*1.5;
+                    crossTime = 7;
+                    waitCarTime = 3;
+                }else{
+                    this.maxWaitTime = maxWaitTime;
+                    crossTime=5;
+                    waitCarTime = 5;
+                }
 	}
         
         public void addPedestrian(){
@@ -49,24 +60,28 @@ public class CrossWalk {
                 rmwt = maxWaitTime;
                 rwct = waitCarTime;
                 rct = crossTime;  
-            }else if(noOfPedestriansWaiting ==0 && noOfPedestriansCrossing>0){
+                waiting = false;
+                crossing = false;
+            }else if(noOfPedestriansWaiting == 0 && noOfPedestriansCrossing>0){
                 //No one waiting but people crossing.
                 //Don't reset crossing timer
                 rmwt = maxWaitTime;
-                rwct = waitCarTime;  
+                rwct = waitCarTime; 
+                crossing = true;
+                waiting = false;
             }
             noOfPedestriansWaiting++;
         }
         
-        public void act(double timestep){
+        public int act(double timestep){
             if (waiting == false && crossing == false && noOfPedestriansWaiting > 0){
                 rmwt-=timestep;
             }
-            if(waiting == true){
+            if(waiting == true&&noOfPedestriansWaiting>0){
                 //Pedestrians waiting
                 rwct -= timestep;
             }
-            if(crossing = true){
+            if(crossing == true){
                 //Pedestrians crossing
                 rct -= timestep;
             }
@@ -86,7 +101,7 @@ public class CrossWalk {
                 }else if(id == 5){
                     r.setTopRightToBottomLeft();
                 }
-                
+                rmwt = maxWaitTime;
                 waiting = true;
             }
             if(rwct<=0){
@@ -95,6 +110,7 @@ public class CrossWalk {
                 waiting = false;
                 noOfPedestriansCrossing = noOfPedestriansWaiting;
                 noOfPedestriansWaiting = 0;
+                rwct=waitCarTime;
             }
             if(rct<=0){
                 //People finished crossing
@@ -113,10 +129,13 @@ public class CrossWalk {
                 }else if(id == 5){
                     r.setTopRightToBottomLeft();
                 }
+                rct = crossTime;
                 //Store this in some grand total of pedestrians crossed...
+                int result = noOfPedestriansCrossing;
                 noOfPedestriansCrossing = 0;
+                return result;
             }
-            
+            return 0;
         }
 	
 	public void setCrossing(){

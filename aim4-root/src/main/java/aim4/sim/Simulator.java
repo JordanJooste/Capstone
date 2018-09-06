@@ -35,11 +35,14 @@ import java.util.Set;
 import aim4.map.BasicMap;
 import aim4.vehicle.ProxyVehicleSimView;
 import aim4.vehicle.VehicleSimView;
+import java.awt.Graphics;
 
 /**
  * An interface for simulators.
  */
 public interface Simulator {
+
+    public int getNumCompletedPedestrians();
 
   /**
    * An interface denoting the result of a simulation step.
