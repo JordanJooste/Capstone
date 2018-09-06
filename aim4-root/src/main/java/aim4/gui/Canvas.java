@@ -73,6 +73,7 @@ import aim4.driver.AutoDriver;
 import aim4.driver.coordinator.V2ICoordinator;
 import aim4.im.IntersectionManager;
 import aim4.im.v2i.V2IManager;
+import aim4.im.v2i.RequestHandler.CrossWalk;
 import aim4.im.v2i.RequestHandler.PedestrianRequestHandler;
 import aim4.im.v2i.RequestHandler.TrafficSignalRequestHandler;
 import aim4.im.v2i.policy.BasePolicy;
@@ -786,7 +787,7 @@ public class Canvas extends JPanel implements ComponentListener,
       
       // Draw the pedestrian crossings
       for (IntersectionManager im : ims) {
-        drawCrossWalks(displayBuffer, im); // The non diagonal crosswalks
+        drawCrossWalk(displayBuffer, im); // The non diagonal crosswalks
         drawPedestrianSpawnPoints(displayBuffer, im);
       }
       
@@ -1374,9 +1375,9 @@ public class Canvas extends JPanel implements ComponentListener,
   
   
   // TODO: confusing name of this list
-  ArrayList<Line2D> crossWalks = new ArrayList<Line2D>();
+  ArrayList<Line2D> crossWalkLines = new ArrayList<Line2D>();
   
-  private void drawCrossWalks(Graphics2D buffer, IntersectionManager im) {
+  private void drawCrossWalk(Graphics2D buffer, IntersectionManager im) {
 	   
 	  if (im instanceof V2IManager) {
 	      
@@ -1391,7 +1392,7 @@ public class Canvas extends JPanel implements ComponentListener,
 	        		(PedestrianRequestHandler) basePolicy.getRequestHandler();
 	    	  
 	    	  Rectangle2D r = im.getIntersection().getBoundingBox();
-	    	  crossWalks.clear();
+	    	  //crossWalkLines.clear();
 	    	  
 	    		// Create the 4 corners of the intersection
 	    		Point2D topLeft = new Point2D.Double(r.getMinX() - O, r.getMinY() - O);
@@ -1407,17 +1408,47 @@ public class Canvas extends JPanel implements ComponentListener,
 	    		Line2D.Double topLeftToBottomRight = new Line2D.Double(topLeft, bottomRight);
 	    		Line2D.Double topRightToBottomLeft = new Line2D.Double(topRight, bottomLeft);
 	    		
+	    		HashMap<Integer, Line2D.Double> lineID = new HashMap<Integer, Line2D.Double>(); 
+	    		lineID.put(0, left);
+	    		lineID.put(1, top);
+	    		lineID.put(2, right);
+	    		lineID.put(3, bottom);
+	    		lineID.put(4, topLeftToBottomRight);
+	    		lineID.put(5, topRightToBottomLeft);
+	    		
 	    		buffer.setStroke(PEDESTRIAN_STROKE);
 	    		
-	    		crossWalks.add(left); crossWalks.add(right);
-	    		crossWalks.add(top); crossWalks.add(bottom);
-	    		crossWalks.add(topLeftToBottomRight); crossWalks.add(topRightToBottomLeft);
+	    		for (int i=0; i<=5; i++) {
+	    			
+	    			CrossWalk cw = requestHandler.getCrossWalks().get(i);
+	    			
+	    			if (cw.getID()==i) {
+	    				
+	    				if (cw.getWaiting()) {
+	    					buffer.setPaint(PEDESTRIAN_WAITING_COLOR);
+	    					buffer.draw(lineID.get(i));
+	    					
+	    				}
+	    				if (cw.getCrossing()) {
+	    					buffer.setPaint(PEDESTRIAN_CROSSING_COLOR);
+	    					buffer.draw(lineID.get(i));
+	    				}
+	    			}
+	    			buffer.setPaint(Color.GREEN);
+	    			buffer.draw(lineID.get(i));
+	    			}
+	    		}
+	    		
+	    		
+	    		//crossWalkLines.add(left); crossWalkLines.add(right);
+	    		//crossWalks.add(top); crossWalks.add(bottom);
+	    		//crossWalks.add(topLeftToBottomRight); crossWalks.add(topRightToBottomLeft);
 	    		
 	    	  // Paint cross walks that are waiting to be crossed yellow
-	    	  buffer.setPaint(PEDESTRIAN_WAITING_COLOR);
+	    	  //buffer.setPaint(PEDESTRIAN_WAITING_COLOR);
 	    	  
 	    		//if (requestHandler.getLeftWaiting()) {
-	    			//buffer.draw(left);
+	    		//buffer.draw(left);
 	        	//}
 	        	//if (requestHandler.getTopWaiting()) {
 	        	//	buffer.draw(top);
@@ -1436,18 +1467,18 @@ public class Canvas extends JPanel implements ComponentListener,
 	        	//}
 		    	
 	    	  // Paint cross walks that are currently being crossed red.
-		      buffer.setPaint(PEDESTRIAN_CROSSING_COLOR);
+		      //buffer.setPaint(PEDESTRIAN_CROSSING_COLOR);
 	    		
-	    	  if (requestHandler.getStopAll()) {
-	        		buffer.draw(left);
-	        		buffer.draw(right);
-	        		buffer.draw(top);
-	        		buffer.draw(bottom);
-	        		buffer.draw(topLeftToBottomRight);
-	        		buffer.draw(topRightToBottomLeft);
-	          }
+	    	  //if (requestHandler.getStopAll()) {
+	        		//buffer.draw(left);
+	        		//buffer.draw(right);
+	        		//buffer.draw(top);
+	        		//buffer.draw(bottom);
+	        		//buffer.draw(topLeftToBottomRight);
+	        		//buffer.draw(topRightToBottomLeft);
+	          //}
 	        
-	    	  else {
+	    	  /* else {
 	        	
 	    		if (requestHandler.getLeft()) {
 	    			buffer.draw(left);
@@ -1468,11 +1499,11 @@ public class Canvas extends JPanel implements ComponentListener,
 	        		buffer.draw(topRightToBottomLeft);
 	        	}
 	    	  }
-	      }
+	    	  */
 	      }
 	  }
   }
-
+ 
   public void drawPedestrianSpawnPoints(Graphics2D buffer, IntersectionManager im) {
 	  
 	  if (im instanceof V2IManager) {
