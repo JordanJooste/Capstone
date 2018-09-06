@@ -5,7 +5,7 @@ import aim4.map.PedestrianSpawnPoint;
 
 public class Pedestrian {
 	
-	private PedestrianSpawnPoint psp;
+	//private PedestrianSpawnPoint psp;
 	// To be extended for GUI. 
 	// Could show pedestrians walking.
 }

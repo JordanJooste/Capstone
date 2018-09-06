@@ -435,7 +435,7 @@ public class AutoDriverOnlySimulator implements Simulator {
 	      psps = requestHandler.getPedestrianSpawnPoints();
 	      	  
 	      for (int i=0; i<=11; i++) {
-	    	 psps.get(i).act(timeStep, requestHandler, i); 
+	    	 psps.get(i).act(timeStep); 
 	      }
 	  }
 	  }

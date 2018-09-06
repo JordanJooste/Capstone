@@ -10,22 +10,50 @@ import aim4.pedestrian.Pedestrian;
 
 public class PedestrianSpawnPoint {
 	
+	/*
+	int id;
+	double p; // pedestrian level
+	double maxWaitTime;
+	ArrayList<Pedestrian> pedestrians = new ArrayList<Pedestrian>();
+	PedestrianRequestHandler requestHandler;
+	
+	public PedestrianSpawnPoint(int id, double p, double maxWaitTime, PedestrianRequestHandler requestHandler){
+		this.id = id;
+		this.p = p;
+		this.maxWaitTime = maxWaitTime;
+		this.pedestrians = new ArrayList<Pedestrian>();
+		this.requestHandler = requestHandler;
+	}
+	
+	public void act(double timeStep) {
+		
+		if 
+		
+	}
+	
+	public boolean pedestriansWaiting() {
+		return !pedestrians.isEmpty();
+	}
+	*/
+	
 	private int id;
 	private double p; // pedestrianLevel
 	private ArrayList<Pedestrian> pedestrians;
 	
+	private double maxWaitTime; // Time between first spawn and crossing. Slider.
 	private double timeRemaining;
-	private double maxWaitTime;
-	private double crossTimeRemaining = 0;
+	
+	private double waitCarTime; // Yellow
+	
+	private double crossTimeRemaining;
 	private double crossTime = 5;
 	
-	public PedestrianSpawnPoint(int id, double p, double maxWaitTime){
+	public PedestrianSpawnPoint(int id, double p, double maxWaitTime, PedestrianRequestHandler requestHandler){
 		this.id = id;
 		this.p = p;
-		this.timeRemaining = maxWaitTime;
-		this.pedestrians = new ArrayList<Pedestrian>();
 		this.maxWaitTime = maxWaitTime;
-		this.timeRemaining = maxWaitTime;
+		this.pedestrians = new ArrayList<Pedestrian>();
+		this.timeRemaining = timeRemaining;
 	}
 	
 	public int getID() {
@@ -34,32 +62,27 @@ public class PedestrianSpawnPoint {
 	public int getNumberOfPedestrians() {
 		return pedestrians.size();
 	}
-	public void pedestriansLeaveSpawnPoint(int i) {
-		pedestrians.clear();
-		timeRemaining = maxWaitTime;
-		crossTimeRemaining = crossTime;
-	}
 	public boolean pedestriansWaiting() {
 		// Determines color of the spawn point
 		return !pedestrians.isEmpty();
 	}
-	
-	public void act(double timeStep, PedestrianRequestHandler requestHandler, int i) {
+	public void act(double timeStep) {
 		
 		if (crossTimeRemaining > 0) {
 			// Pedestrians are currently crossing
 			crossTimeRemaining -= timeStep;
 			if (crossTimeRemaining <= 0) {
-				
+				// Pedestrians have crossed
+				setCrossWalk();
 			}
 		}
 		
-		else { // crossTimeRemaining <=0
+		else { // crossmaxWaitTime <=0
 			
-			if (getTimeRemaining() <= 0) {
+			if (timeRemaining <= 0) {
 				// Time is up
-				requestHandler.setCrossWalk(i);
-				pedestriansLeaveSpawnPoint(i);
+				pedestrians.clear();
+				
 			}
 			
 			else {
@@ -79,26 +102,18 @@ public class PedestrianSpawnPoint {
 				}
 				
 				if (pedestriansWaiting()) {
-					timeRemaining -= timeStep;
+					maxWaitTime -= timeStep;
 				}
 			}
 		}
 	}
 	
-	public double getTimeRemaining() {
-		return timeRemaining;
-	}
-	
-	public double getCrossTimeRemaining() {
-		return crossTimeRemaining;
-	}
-	
-	private void setCrossWalk(int i) {
-		
+	private void setCrossWalk() {
+		// ?
+		// Change booleans
 	}
 	
 	public void setCrossTime(double c) {
 		crossTime = c;
 	}
-	
 }

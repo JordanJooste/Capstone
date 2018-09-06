@@ -205,6 +205,7 @@ public class Canvas extends JPanel implements ComponentListener,
   private static final Color PSP_OCCUPIED_COLOR = Color.MAGENTA;
   /** Color of spawn point without pedestrians on it */
   private static final Color PSP_EMPTY_COLOR = Color.WHITE;
+  /** Outline color */
   private static final Color PSP_OUTLINE_COLOR = Color.BLACK;
   /** Pedestrian spawn point square width */
   private static final int H = 4;
@@ -1412,11 +1413,29 @@ public class Canvas extends JPanel implements ComponentListener,
 	    		crossWalks.add(top); crossWalks.add(bottom);
 	    		crossWalks.add(topLeftToBottomRight); crossWalks.add(topRightToBottomLeft);
 	    		
-	    		buffer.setPaint(PEDESTRIAN_WAITING_COLOR);
-		    	  for (Line2D c : crossWalks) {
-		    		 buffer.draw(c);
-		    	  }
-		    	 
+	    	  // Paint cross walks that are waiting to be crossed yellow
+	    	  buffer.setPaint(PEDESTRIAN_WAITING_COLOR);
+	    	  
+	    		//if (requestHandler.getLeftWaiting()) {
+	    			//buffer.draw(left);
+	        	//}
+	        	//if (requestHandler.getTopWaiting()) {
+	        	//	buffer.draw(top);
+	        	//}
+	        	//if (requestHandler.getRightWaiting()) {
+	        	//	buffer.draw(right);
+	        	//}
+	        	//if (requestHandler.getBottomWaiting()) {
+	        	//	buffer.draw(bottom);
+	        	//}
+	        	//if (requestHandler.getTopLeftToBottomRightWaiting()) {
+	        	//	buffer.draw(topLeftToBottomRight);
+	        	//}
+	        	//if (requestHandler.getTopRightToBottomLeftWaiting()) {
+	        	//	buffer.draw(topRightToBottomLeft);
+	        	//}
+		    	
+	    	  // Paint cross walks that are currently being crossed red.
 		      buffer.setPaint(PEDESTRIAN_CROSSING_COLOR);
 	    		
 	    	  if (requestHandler.getStopAll()) {

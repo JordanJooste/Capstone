@@ -36,6 +36,7 @@ public class PedestrianRequestHandler implements RequestHandler{
   /** The next switch time */
   private double nextSwitchTime;
   
+ 
   /** Whether pedestrians are crossing the left road*/
   private boolean left;
   /** Whether pedestrians are crossing the right road*/
@@ -50,6 +51,21 @@ public class PedestrianRequestHandler implements RequestHandler{
   private boolean topRightToBottomLeft;
   /** Whether pedestrians are crossing all roads and across the intersection*/
   private boolean stopAll;
+ 
+  //private boolean leftWaiting;
+  //private boolean rightWaiting;
+  //private boolean topWaiting;
+  //private boolean bottomWaiting;
+  //private boolean topLeftToBottomRightWaiting;
+  //private boolean topRightToBottomLeftWaiting;
+  
+  private CrossWalk leftCW = new CrossWalk(0,11,this);
+  private CrossWalk rightCW = new CrossWalk(0,11,this);
+  private CrossWalk topCW = new CrossWalk(0,11,this);
+  private CrossWalk bottomCW = new CrossWalk(0,11,this);
+  private CrossWalk topRightToBottomLeftCW = new CrossWalk(0,11,this);
+  private CrossWalk topLeftToBottomRightCW = new CrossWalk(0,11,this);
+  
   
   // Spawn point variables
   private ArrayList<PedestrianSpawnPoint> psps = new ArrayList<PedestrianSpawnPoint>();
@@ -74,7 +90,7 @@ public class PedestrianRequestHandler implements RequestHandler{
       this.pedestrianLevel = pedestrianLevel;
       this.maxWaitTime = maxWaitTime;
       for (int x=0; x<=11; x++) {
-    	  psps.add(new PedestrianSpawnPoint(x, pedestrianLevel, maxWaitTime));
+    	  psps.add(new PedestrianSpawnPoint(x, pedestrianLevel, maxWaitTime, this));
       }
   } 
   
@@ -397,7 +413,7 @@ public class PedestrianRequestHandler implements RequestHandler{
     }
   }
      
-  private void sendRejects(){
+  void sendRejects(){
       for(Integer v : tracking){
           try{
             //notify vehicles that next step must revaluate path
@@ -487,7 +503,65 @@ public class PedestrianRequestHandler implements RequestHandler{
       }
   }
   
-  public void setCrossWalk(int i) {
+  // SET WAITING (YELLOW)
+  
+  /*
+  public void setLeftWaiting(){
+      if(leftWaiting==true)
+        leftWaiting=false;
+      else{
+        leftWaiting=true;
+        sendRejects();
+      }
+  }
+  
+  public void setRightWaiting(){
+      if(rightWaiting==true)
+        rightWaiting=false;
+      else{
+        rightWaiting=true;
+        sendRejects();
+      }
+  }
+  
+  public void setTopWaiting(){
+      if(topWaiting==true)
+        topWaiting=false;
+      else{
+        topWaiting=true;
+        sendRejects();
+      }
+  }
+  
+  public void setBottomWaiting(){
+      if(bottomWaiting==true)
+        bottomWaiting=false;
+      else{
+        bottomWaiting=true;
+        sendRejects();
+      }
+  }
+  
+  public void setTopLeftToBottomRightWaiting(){
+      if(topLeftToBottomRightWaiting==true)
+        topLeftToBottomRightWaiting=false;
+      else{
+        topLeftToBottomRightWaiting=true;
+        sendRejects();
+      }
+  }
+  
+  public void setTopRightToBottomLeftWaiting(){
+      if(topRightToBottomLeftWaiting==true)
+        topRightToBottomLeftWaiting=false;
+      else{
+        topRightToBottomLeftWaiting=true;
+        sendRejects();
+      }
+  }
+  */
+  
+  /* public void setCrossWalk(int i) {
 	  
 	  if (i == 0 || i == 11) {
 		  setLeft();
@@ -508,8 +582,11 @@ public class PedestrianRequestHandler implements RequestHandler{
 		  setBottom();
 	  }
   }
+  */
   
   // BOOLEAN GETTERS //
+  
+  // getX() == RED
   
   public boolean getLeft() {
 	  return left;
@@ -550,4 +627,37 @@ public class PedestrianRequestHandler implements RequestHandler{
   public double getMaxWaitTime(){
 	  return maxWaitTime;
   }
+  
+  // getXWaiting() == YELLOW
+
+  /*
+  public boolean getLeftWaiting() {
+	  return leftWaiting;
+  }
+
+  public boolean getTopWaiting() {
+	  // TODO Auto-generated method stub
+	  return topWaiting;
+  }	
+
+  public boolean getRightWaiting() {
+	  // TODO Auto-generated method stub
+	  return rightWaiting;
+  }
+
+  public boolean getBottomWaiting() {
+	  // TODO Auto-generated method stub
+	  return bottomWaiting;
+  }
+
+  public boolean getTopLeftToBottomRightWaiting() {
+	  // TODO Auto-generated method stub
+	  return topLeftToBottomRightWaiting;
+  }
+
+  public boolean getTopRightToBottomLeftWaiting() {
+	  // TODO Auto-generated method stub
+	  return topRightToBottomLeftWaiting;
+  }
+  */
 }
