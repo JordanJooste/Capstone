@@ -51,15 +51,7 @@ public class PedestrianRequestHandler implements RequestHandler{
   private boolean topRightToBottomLeft;
   /** Whether pedestrians are crossing all roads and across the intersection*/
   private boolean stopAll;
- 
-  //private boolean leftWaiting;
-  //private boolean rightWaiting;
-  //private boolean topWaiting;
-  //private boolean bottomWaiting;
-  //private boolean topLeftToBottomRightWaiting;
-  //private boolean topRightToBottomLeftWaiting;
-  
-  
+
   // Spawn point variables
   private ArrayList<PedestrianSpawnPoint> psps = new ArrayList<PedestrianSpawnPoint>();
   
@@ -75,6 +67,8 @@ public class PedestrianRequestHandler implements RequestHandler{
   private IntersectionManager im;
   
   private ArrayList<Integer> tracking;
+  
+  private int totalCrossed = 0; // running total of pedestrians that have crossed.
   
   /////////////////////////////////
   // CONSTRUCTOR
@@ -651,6 +645,17 @@ public class PedestrianRequestHandler implements RequestHandler{
 	  return walks;
   }
   
+  public void increaseTotalCrossed(int i) {
+	  totalCrossed += i;
+  }
+  
+  public int getTotalCrossed() {
+	  return totalCrossed;
+  }
+  
+  public double getAverageWaitTime() {
+	  return 0.0;
+  }
   // getXWaiting() == YELLOW
 
   /*

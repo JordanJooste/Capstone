@@ -76,6 +76,7 @@ public class BasicSimSetup implements SimSetup {
     this.stopDistBeforeIntersection = basicSimSetup.stopDistBeforeIntersection;
     this.pedestrianLevel = basicSimSetup.pedestrianLevel;
     this.maxWaitTime = basicSimSetup.maxWaitTime;
+    
   }
 
   /**

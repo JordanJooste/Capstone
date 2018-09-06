@@ -54,6 +54,7 @@ import aim4.driver.DriverSimView;
 import aim4.driver.ProxyDriver;
 import aim4.im.IntersectionManager;
 import aim4.im.v2i.V2IManager;
+import aim4.im.v2i.RequestHandler.CrossWalk;
 import aim4.im.v2i.RequestHandler.PedestrianRequestHandler;
 import aim4.im.v2i.policy.BasePolicy;
 import aim4.im.v2i.policy.Policy;
@@ -134,9 +135,6 @@ public class AutoDriverOnlySimulator implements Simulator {
   private int i = 0; // Used to control spawning of pedestrians in main algorithm
   private int n = 100;
   public static CountDownLatch CountDown;
-  private int id = -1;
-  private double crossTimeRemaining;
-  
   
   /////////////////////////////////
   // CLASS CONSTRUCTORS
@@ -1040,6 +1038,4 @@ public class AutoDriverOnlySimulator implements Simulator {
       im.checkCurrentTime(currentTime);
     }
   }
-
-
 }
