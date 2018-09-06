@@ -487,6 +487,28 @@ public class PedestrianRequestHandler implements RequestHandler{
       }
   }
   
+  public void setCrossWalk(int i) {
+	  
+	  if (i == 0 || i == 11) {
+		  setLeft();
+	  }
+	  if (i == 1 || i == 7) {
+		  setTopLeftToBottomRight();
+	  }
+	  if (i == 2 || i == 3) {
+		  setTop();
+	  }
+	  if (i == 4 || i == 10) {
+		  setTopRightToBottomLeft();
+	  }
+	  if (i == 5 || i == 6) {
+		  setRight();
+	  }
+	  if (i == 8 || i == 9) {
+		  setBottom();
+	  }
+  }
+  
   // BOOLEAN GETTERS //
   
   public boolean getLeft() {

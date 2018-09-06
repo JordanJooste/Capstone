@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import aim4.im.v2i.RequestHandler.PedestrianRequestHandler;
 import aim4.pedestrian.Pedestrian;
 
 public class PedestrianSpawnPoint {
@@ -15,6 +16,8 @@ public class PedestrianSpawnPoint {
 	
 	private double timeRemaining;
 	private double maxWaitTime;
+	private double crossTimeRemaining = 0;
+	private double crossTime = 5;
 	
 	public PedestrianSpawnPoint(int id, double p, double maxWaitTime){
 		this.id = id;
@@ -31,43 +34,53 @@ public class PedestrianSpawnPoint {
 	public int getNumberOfPedestrians() {
 		return pedestrians.size();
 	}
-	public void clearPedestrians() {
+	public void pedestriansLeaveSpawnPoint(int i) {
 		pedestrians.clear();
+		timeRemaining = maxWaitTime;
+		crossTimeRemaining = crossTime;
 	}
 	public boolean pedestriansWaiting() {
+		// Determines color of the spawn point
 		return !pedestrians.isEmpty();
 	}
 	
-	public void spawn () {
-		Pedestrian p = new Pedestrian();
-		pedestrians.add(p);
-	}
-	
-	public void act(double timeStep) {
-		// p = 100: pedestrian spawns every time step
-		// p = 0: pedestrian never spawns
-		Random r = new Random();
+	public void act(double timeStep, PedestrianRequestHandler requestHandler, int i) {
 		
-		// Return random double between 0 and 100
-		double randomValue =  10000 * r.nextDouble();
-
-		if (getTimeRemaining() <= 0) {
-			// Time is up
-			pedestrians.clear();
-			timeRemaining = maxWaitTime;
+		if (crossTimeRemaining > 0) {
+			// Pedestrians are currently crossing
+			crossTimeRemaining -= timeStep;
+			if (crossTimeRemaining <= 0) {
+				
+			}
 		}
 		
-		else {
-			if (randomValue <= p) {
-				Pedestrian p = new Pedestrian();
-				pedestrians.add(p);
-			}
-			else {
-				// Do nothing
+		else { // crossTimeRemaining <=0
+			
+			if (getTimeRemaining() <= 0) {
+				// Time is up
+				requestHandler.setCrossWalk(i);
+				pedestriansLeaveSpawnPoint(i);
 			}
 			
-			if (pedestriansWaiting()) {
-				timeRemaining -= timeStep;
+			else {
+				
+				// p = 100: pedestrian spawns every time step
+				// p = 0: pedestrian never spawns
+				Random r = new Random();
+				// Return random double between 0 and 100
+				double randomValue =  100000 * r.nextDouble();
+
+				if (randomValue <= p) {
+					Pedestrian p = new Pedestrian();
+					pedestrians.add(p);
+				}
+				else {
+					// Do nothing
+				}
+				
+				if (pedestriansWaiting()) {
+					timeRemaining -= timeStep;
+				}
 			}
 		}
 	}
@@ -75,4 +88,17 @@ public class PedestrianSpawnPoint {
 	public double getTimeRemaining() {
 		return timeRemaining;
 	}
+	
+	public double getCrossTimeRemaining() {
+		return crossTimeRemaining;
+	}
+	
+	private void setCrossWalk(int i) {
+		
+	}
+	
+	public void setCrossTime(double c) {
+		crossTime = c;
+	}
+	
 }

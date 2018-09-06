@@ -131,11 +131,11 @@ public class AutoDriverOnlySimulator implements Simulator {
   private int totalBitsReceivedByCompletedVehicles;
   
   private ArrayList<PedestrianSpawnPoint> psps = new ArrayList<PedestrianSpawnPoint>();
-  private double pedestrianLevel;
-  private double maxWaitTime;
   private int i = 0; // Used to control spawning of pedestrians in main algorithm
   private int n = 100;
   public static CountDownLatch CountDown;
+  private int id = -1;
+  private double crossTimeRemaining;
   
   
   /////////////////////////////////
@@ -154,8 +154,6 @@ public class AutoDriverOnlySimulator implements Simulator {
     numOfCompletedVehicles = 0;
     totalBitsTransmittedByCompletedVehicles = 0;
     totalBitsReceivedByCompletedVehicles = 0;
-    this.pedestrianLevel = basicMap.getPedestrianLevel();
-    this.maxWaitTime = basicMap.getMaxWaitTime();
   }
 
   /////////////////////////////////
@@ -185,7 +183,7 @@ public class AutoDriverOnlySimulator implements Simulator {
     // Only spawn pedestrians every n sim steps
     //i = i%n;
     //if (i==0) {
-    	spawnPedestrians(timeStep);
+    spawnPedestrians(timeStep);
     //}
     //i++;
     
@@ -424,35 +422,22 @@ public class AutoDriverOnlySimulator implements Simulator {
   // SPAWN PEDESTRIANS
   private void spawnPedestrians(double timeStep) {
 	  
-	  // for each intersection
-	  	// if intersection manager is a pedestsrianRequestHandler
-	  		// for each PSP 0 -> 11
-	  			// spawn with probability p
-	  			// do nothing with probability 1-p
-	  		//
-	  	// else do nothing 
+	  IntersectionManager im = basicMap.getIntersectionManagers().get(i);
+	  Policy policy = ((V2IManager) im).getPolicy();
+	  if (policy instanceof BasePolicy) {
+	  BasePolicy basePolicy = (BasePolicy) policy;
 	  
-	  // Needed: All IM objects and the pedestrian level
-	  
-	  //for (IntersectionManager im : basicMap.getIntersectionManagers()) {
-
-	  	  IntersectionManager im = basicMap.getIntersectionManagers().get(i);
-		  Policy policy = ((V2IManager) im).getPolicy();
-	      if (policy instanceof BasePolicy) {
-	      BasePolicy basePolicy = (BasePolicy) policy;
-	    		  
-	      if (basePolicy.getRequestHandler() instanceof PedestrianRequestHandler) {
+	  if (basePolicy.getRequestHandler() instanceof PedestrianRequestHandler) {
 	    	  
+		  PedestrianRequestHandler requestHandler = 
+				  (PedestrianRequestHandler) basePolicy.getRequestHandler();	
 	    	  
-	    	  PedestrianRequestHandler requestHandler = 
-		        		(PedestrianRequestHandler) basePolicy.getRequestHandler();	
-	    	  
-	    	  psps = requestHandler.getPedestrianSpawnPoints();
-	    	  
-	    	 for (int i=0; i<=11; i++) {
-	    		 psps.get(i).act(timeStep);
-	    	 }
+	      psps = requestHandler.getPedestrianSpawnPoints();
+	      	  
+	      for (int i=0; i<=11; i++) {
+	    	 psps.get(i).act(timeStep, requestHandler, i); 
 	      }
+	  }
 	  }
   }  
   

@@ -207,9 +207,9 @@ public class Canvas extends JPanel implements ComponentListener,
   private static final Color PSP_EMPTY_COLOR = Color.WHITE;
   private static final Color PSP_OUTLINE_COLOR = Color.BLACK;
   /** Pedestrian spawn point square width */
-  private static final int H = 3;
+  private static final int H = 4;
   /** Pedestrian spawn point offset */
-  private static final int O = 3;
+  private static final int O = 2;
   /** Stroke for pedestrian spawn points */
   private static final Stroke PSP_STROKE = new BasicStroke(0.5f);
   
@@ -1393,10 +1393,10 @@ public class Canvas extends JPanel implements ComponentListener,
 	    	  crossWalks.clear();
 	    	  
 	    		// Create the 4 corners of the intersection
-	    		Point2D topLeft = new Point2D.Double(r.getMinX(), r.getMinY());
-	    	    Point2D bottomLeft = new Point2D.Double(r.getMinX(), r.getMaxY());
-	    	    Point2D topRight = new Point2D.Double(r.getMaxX(), r.getMinY());
-	    	    Point2D bottomRight = new Point2D.Double(r.getMaxX(), r.getMaxY());
+	    		Point2D topLeft = new Point2D.Double(r.getMinX() - O, r.getMinY() - O);
+	    	    Point2D bottomLeft = new Point2D.Double(r.getMinX() - O, r.getMaxY() + O);
+	    	    Point2D topRight = new Point2D.Double(r.getMaxX() + O, r.getMinY() - O);
+	    	    Point2D bottomRight = new Point2D.Double(r.getMaxX() + O, r.getMaxY() + O);
 	    		
 	    	    // Create the 6 cross walks linking each corner
 	    		Line2D.Double left = new Line2D.Double(topLeft, bottomLeft);
@@ -1474,18 +1474,18 @@ public class Canvas extends JPanel implements ComponentListener,
 	    	  
 	    	  ArrayList<Rectangle2D.Double> psps = new ArrayList<Rectangle2D.Double>(); 
 	    	  
-	    	  Rectangle2D.Double psp0 = new Rectangle2D.Double(r.getMinX() - O, r.getMinY() - O, H, H);
-	    	  Rectangle2D.Double psp1 = new Rectangle2D.Double(r.getMinX() - O, r.getMinY(), H, H);
+	    	  Rectangle2D.Double psp0 = new Rectangle2D.Double(r.getMinX() - H, r.getMinY() - H, H, H);
+	    	  Rectangle2D.Double psp1 = new Rectangle2D.Double(r.getMinX() - H, r.getMinY(), H, H);
 	    	  Rectangle2D.Double psp2 = new Rectangle2D.Double(r.getMinX(), r.getMinY() - H, H, H);
-	    	  Rectangle2D.Double psp3 = new Rectangle2D.Double(r.getMaxX() - O, r.getMinY() - O, H, H);
-	    	  Rectangle2D.Double psp4 = new Rectangle2D.Double(r.getMaxX(), r.getMinY() - O, H, H);
+	    	  Rectangle2D.Double psp3 = new Rectangle2D.Double(r.getMaxX() - H, r.getMinY() - H, H, H);
+	    	  Rectangle2D.Double psp4 = new Rectangle2D.Double(r.getMaxX(), r.getMinY() - H, H, H);
 	    	  Rectangle2D.Double psp5 = new Rectangle2D.Double(r.getMaxX(), r.getMinY(), H, H);
-	    	  Rectangle2D.Double psp6 = new Rectangle2D.Double(r.getMaxX(), r.getMaxY() - O, H, H);
+	    	  Rectangle2D.Double psp6 = new Rectangle2D.Double(r.getMaxX(), r.getMaxY() - H, H, H);
 	    	  Rectangle2D.Double psp7 = new Rectangle2D.Double(r.getMaxX(), r.getMaxY(), H, H);
-	    	  Rectangle2D.Double psp8 = new Rectangle2D.Double(r.getMaxX() - O, r.getMaxY(), H, H);
+	    	  Rectangle2D.Double psp8 = new Rectangle2D.Double(r.getMaxX() - H, r.getMaxY(), H, H);
 	    	  Rectangle2D.Double psp9 = new Rectangle2D.Double(r.getMinX(), r.getMaxY(), H, H);
-	    	  Rectangle2D.Double psp10 = new Rectangle2D.Double(r.getMinX() - O, r.getMaxY(), H, H);
-	    	  Rectangle2D.Double psp11 = new Rectangle2D.Double(r.getMinX() - O, r.getMaxY() - O, H, H);
+	    	  Rectangle2D.Double psp10 = new Rectangle2D.Double(r.getMinX() - H, r.getMaxY(), H, H);
+	    	  Rectangle2D.Double psp11 = new Rectangle2D.Double(r.getMinX() - H, r.getMaxY() - H, H, H);
 	    	 
 	    	  psps.add(psp0);psps.add(psp1);psps.add(psp2);psps.add(psp3);psps.add(psp4);psps.add(psp5);
 	    	  psps.add(psp6);psps.add(psp7);psps.add(psp8);psps.add(psp9);psps.add(psp10);psps.add(psp11);
